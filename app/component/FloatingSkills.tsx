@@ -16,10 +16,10 @@ const skills = [
 
 export default function FloatingSkills() {
     const containerRef = useRef(null);
-    const [positions, setPositions] = useState([]);
+    const [positions, setPositions] = useState<any>([]);
 
     useEffect(() => {
-        const container = containerRef.current;
+        const container:any = containerRef.current;
         if (!container) return;
 
         const w = container.clientWidth;
@@ -64,7 +64,7 @@ export default function FloatingSkills() {
     }, []);
 
     const togglePause = (i:any, pause:any) => {
-        setPositions((prev) => {
+        setPositions((prev: any) => {
             const arr = [...prev];
             arr[i].paused = pause;
             return arr;
