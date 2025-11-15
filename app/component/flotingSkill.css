@@ -1,0 +1,60 @@
+.skills-container {
+    margin-top: 80px;
+    text-align: center;
+}
+
+.skills-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.skills-box {
+    width: 100%;
+    height: 420px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+/* Circle bubble */
+.skill-bubble {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 18px rgba(255,255,255,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: 0.25s ease-out;
+    cursor: pointer;
+    transform: translate(0px, 0px);
+}
+
+/* Glow effect */
+.skill-bubble:hover {
+    transform: scale(1.22) !important;
+    box-shadow: 0 0 25px rgba(255,255,255,0.6),
+    0 0 50px rgba(255,255,255,0.4);
+    z-index: 10;
+}
+
+/* Logo inside the bubble */
+.skill-bubble img {
+    width: 36px;
+    height: 36px;
+}
+
+.skill-bubble span {
+    font-size: 11px;
+    color: #fff;
+    margin-top: 4px;
+    text-shadow: 0 0 4px rgba(255,255,255,0.6);
+}
