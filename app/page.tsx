@@ -214,12 +214,6 @@ export default function Home() {
     }, []);
 return (
     <>
-      <head>
-        <title>Nirmal Ranpariya ✦ Full-Stack Software Developer Portfolio</title>
-        <meta name="theme-color" content="#0ea5e9" />
-        <meta name="description" content="Nirmal Ranpariya | Full-Stack Software Developer (React Native, React.js, Node.js). 2+ years of crafting high-performance, scalable applications." />
-        {/* No need for charset or viewport, Next.js injects automatically */}
-      </head>
       <div className="bg-gradient" aria-hidden="true"></div>
       <canvas id="bg-canvas" aria-hidden="true"></canvas>
       {/* SVG noise overlay */}
@@ -518,7 +512,7 @@ return (
                 <p className="muted">Planning to publish technical tutorials and deep dives on React Native, React.js, and backend development. On a mission to publish insightful tutorials and deep dives covering React Native, React.js, and backend development—breaking down complex topics into accessible, real-world, developer-friendly content.</p>
               </div>
             </div>
-            <a className="tile reveal" href="#resume-link-here" style={{ gridColumn: "span 4" }}>
+            <a className="tile reveal" href="/Nirmal_Ranpariya_Resume.pdf" download="Nirmal_Ranpariya_Resume.pdf"  style={{ gridColumn: "span 4" }}>
               <div className="shine"></div>
               <div className="tile-content">
                   <img
@@ -527,7 +521,7 @@ return (
                       className='card-img'
                   />
                   <div className="flex flex-row items-center mt-2">
-                    <a style={{ margin: "0 0 8px", fontSize: 23, fontWeight:'500'}} href="/Nirmal_Ranpariya_Resume.pdf" download="Nirmal_Ranpariya_Resume.pdf" >Download Resume</a>
+                    <p style={{ margin: "0 0 8px", fontSize: 23, fontWeight:'500'}}>Download Resume</p>
                     <Download className="ml-3 mb-2"/>
                   </div>
                 <p className="muted">Access my full CV and professional history as a PDF (link placeholder).</p>
