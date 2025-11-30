@@ -309,7 +309,7 @@ return (
                     src="https://static.tildacdn.com/tild3730-3836-4333-b738-333762396635/1709507970_smartphon.jpg"
                     className='card-img'
                 />
-                <h3>Mobile App Development</h3>
+                <h3 className="pt-2">Mobile App Development</h3>
               <p>React Native, performance optimization, and seamless deployment on both Android & iOS platforms.</p>
             </article>
             <article className="card tilt reveal">
@@ -318,7 +318,7 @@ return (
                     src="https://www.simplilearn.com/ice9/free_resources_article_thumb/full_front_back.jpg"
                     className='card-img'
                 />
-              <h3>Web Development (Frontend)</h3>
+              <h3 className="pt-2" >Web Development (Frontend)</h3>
               <p>React.js, crafting responsive, animated UIs with a focus on exceptional UX design using Tailwind CSS.</p>
             </article>
             <article className="card tilt reveal">
@@ -327,7 +327,7 @@ return (
                     src="https://miro.medium.com/v2/resize:fit:1200/1*ee5Xp-vKG6kcMCO_JDZmmQ.png"
                     className='card-img'
                 />
-              <h3>Backend & API Services</h3>
+              <h3 className="pt-2" >Backend & API Services</h3>
               <p>Node.js, building robust REST APIs with Express.js , foundational knowledge in AWS and cloud architecture.</p>
             </article>
             <article className="card tilt reveal">
@@ -336,7 +336,7 @@ return (
                     src="https://cdn.dribbble.com/users/3859449/screenshots/9191591/sql_query_optimization.jpg"
                     className='card-img'
                 />
-              <h3>Cloud & Databases</h3>
+              <h3 className="pt-2" >Cloud & Databases</h3>
               <p>Specialist in Firebase (Realtime DB, Firestore, Auth), and skilled in MongoDB and SQL/NoSQL fundamentals.</p>
             </article>
             <article className="card tilt reveal">
@@ -345,7 +345,7 @@ return (
                     src="https://miro.medium.com/v2/resize:fit:1200/1*lp8r5b4o-zryHxdKHynlyw.png"
                     className='card-img'
                 />
-              <h3>Version Control & DevOps</h3>
+              <h3 className="pt-2" >Version Control & DevOps</h3>
               <p>Proficient with Git , GitHub , and GitLab . Basic understanding and implementation of CI/CD pipelines.</p>
             </article>
             <article className="card tilt reveal">
@@ -354,14 +354,14 @@ return (
                     src="https://prezibase.com/wp-content/uploads/2018/08/creative-abstract-3d-design-agency-multimedia-presentation-template-for-prezi-and-powerpoint-Slide1-4.jpg"
                     className='card-img'
                 />
-              <h3>Design & Multimedia</h3>
+              <h3 className="pt-2" >Design & Multimedia</h3>
               <p>Creating compelling promotional content using Photoshop, After Effects, and Canva to enhance product visibility.</p>
             </article>
           </div>
         </section>
 
-        <section id="projects" className="section wrap">
-          <h2 className="reveal" style={{ textAlign: "center", fontSize: "var(--subtitle)", marginBottom: "var(--gap)" }}>
+        <section id="skills" className="section wrap">
+          <h2 className="reveal" id='projects' style={{ textAlign: "center", fontSize: "var(--subtitle)", marginBottom: "var(--gap)" }}>
             Selected Projects
           </h2>
           <div className="gallery">
@@ -404,7 +404,7 @@ return (
                 <p className="role">Catchat is the all-in-one platform where you can Connect, Chat, Shop, and Create. From scrolling your social feed and chatting with friends to discovering marketplace deals and filming quick reels—everything you need is right here.</p>
               </div>
             </a>
-            <div className="tile reveal" style={{ gridColumn: "span 3" }}>
+            <div className="tile reveal">
               <div className="shine"></div>
               <div className="tile-content">
                 <h3>Project Video Showcase</h3>
@@ -479,16 +479,17 @@ return (
         {/*    </div>*/}
         {/*  </div>*/}
         {/*</section>*/}
-
-        <section className="section wrap" style={{ display: "grid", gap: "var(--gap)" }}>
+          <section className="section wrap">
           <blockquote className="quote reveal">
-            “Fueled by a deep passion for full-stack development , I specialize in
-            crafting seamless, high-performance apps using React Native, React.js, and Node.js. I don't just
-            build apps—I solve real-world problems with clean, scalable code.”
-            <small>— Nirmal Ranpariya | Mission Statement</small>
+              “Fueled by a deep passion for full-stack development , I specialize in
+              crafting seamless, high-performance apps using React Native, React.js, and Node.js. I don't just
+              build apps—I solve real-world problems with clean, scalable code.”
+              <small>— Nirmal Ranpariya | Mission Statement</small>
           </blockquote>
-          <div className="grid">
-            <div className="tile reveal" style={{ gridColumn: "span 4" }}>
+         </section>
+        <section className="section wrap">
+          <div className="gallery grid">
+            <div className="tile reveal sm:col-span-12" style={{ gridColumn: "" }}>
               <div className="shine"></div>
               <div className="tile-content">
                   <img
@@ -500,7 +501,7 @@ return (
                 <p className="muted">Consistent delivery of performant, scalable mobile/web apps. Strong full-stack coding and problem-solving skills.Crafting smooth, fast, and scalable digital experiences—driven by solid full-stack engineering, clean architecture, and a passion for solving complex problems.</p>
               </div>
             </div>
-            <div className="tile reveal" style={{ gridColumn: "span 4" }}>
+            <div className="tile reveal sm:col-span-12" style={{ gridColumn: "" }}>
               <div className="shine"></div>
               <div className="tile-content">
                   <img
@@ -512,7 +513,7 @@ return (
                 <p className="muted">Planning to publish technical tutorials and deep dives on React Native, React.js, and backend development. On a mission to publish insightful tutorials and deep dives covering React Native, React.js, and backend development—breaking down complex topics into accessible, real-world, developer-friendly content.</p>
               </div>
             </div>
-            <a className="tile reveal" href="/Nirmal_Ranpariya_Resume.pdf" download="Nirmal_Ranpariya_Resume.pdf"  style={{ gridColumn: "span 4" }}>
+            <a className="tile reveal sm:col-span-12" href="/Nirmal_Ranpariya_Resume.pdf" download="Nirmal_Ranpariya_Resume.pdf"  style={{ gridColumn: "" }}>
               <div className="shine"></div>
               <div className="tile-content">
                   <img
@@ -532,7 +533,7 @@ return (
 
         <section id="contact" className="section wrap">
           <div className="grid">
-            <div className="card reveal" style={{ gridColumn: "span 7" }}>
+            <div className="card reveal" style={{ gridColumn: "" }}>
               <h3>Let's Build Your Masterpiece</h3>
               <p className="muted">
                 I am open to exciting projects and collaborations worldwide. Tell me about your
@@ -561,7 +562,7 @@ return (
                 </div>
               </form>
             </div>
-              <div className="card reveal" style={{ gridColumn: "span 5" }}>
+              <div className="card reveal" style={{ gridColumn: "" }}>
                   <h3 style={{ marginBottom: 12 }}>Contact & Links</h3>
 
                   <ul
@@ -576,7 +577,7 @@ return (
                           lineHeight: 1.6,
                       }}
                   >
-                      <li>
+                      <li className="p-2">
                           📧 <strong>Email:</strong>{" "}
                           <a
                               href="mailto:nirmatech.dev@gmail.com"
@@ -587,7 +588,7 @@ return (
                           </a>
                       </li>
 
-                      <li>
+                      <li className="p-2">
                           📱 <strong>Phone:</strong>{" "}
                           <a
                               href="tel:+919664648614"
@@ -598,7 +599,7 @@ return (
                           </a>
                       </li>
 
-                      <li>
+                      <li className="p-2">
                           💻 <strong>GitHub:</strong>{" "}
                           <a
                               href="https://github.com/NirmalTechDev"
@@ -610,7 +611,7 @@ return (
                           </a>
                       </li>
 
-                      <li>
+                      <li className="p-2">
                           🔗 <strong>LinkedIn:</strong>{" "}
                           <a
                               href="https://www.linkedin.com/in/nirmal-ranpariya-625766266"
@@ -622,7 +623,7 @@ return (
                           </a>
                       </li>
 
-                      <li>
+                      <li className="p-2">
                           💼 <strong>Upwork:</strong>{" "}
                           <a
                               href="https://www.upwork.com/freelancers/~0139b1b97fb2cf2377"
@@ -634,7 +635,7 @@ return (
                           </a>
                       </li>
 
-                      <li>
+                      <li className="p-2">
                           🧠 <strong>Stack Overflow:</strong>{" "}
                           <a
                               href="https://stackoverflow.com/users/27369682/nirmal-patel"
