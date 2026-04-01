@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
-import MediaGallery from "@/app/component/MediaGallery";
 import {Download} from "lucide-react";
 import FloatingSkills from "@/app/component/FloatingSkills";
+import ProjectsSection from "@/app/component/projects/ProjectsSection";
 interface Particle {
     x: number;
     y: number;
@@ -360,74 +360,7 @@ return (
           </div>
         </section>
 
-        <section id="skills" className="section wrap">
-          <h2 className="reveal" id='projects' style={{ textAlign: "center", fontSize: "var(--subtitle)", marginBottom: "var(--gap)" }}>
-            Selected Projects
-          </h2>
-          <div className="gallery">
-            <a className="tile reveal" href="https://opigo.in" target="_blank" rel="noopener">
-              <div className="shine"></div>
-              <div className="tile-content">
-                <h3 className="pb-3 font-serif font-bold text-blue-400">OPIGO 📈</h3>
-                  <img
-                      alt={'Version Control & DevOps'}
-                      src="/opiGo/opigo-starter.jpeg"
-                      className='card-img'
-                  />
-                <p className="tech mt-5">React Native, Node.js, Realtime Data Access, Stocks Charts, Firebase.</p>
-                <p className="role">OpiGo is a Mumbai-based, social stock trading platform that allows users to get investment advice from SEBI-registered experts. Founded in 2021, the company offers a gamified community, polls, expert advisory, and reward systems to help traders and investors with their decisions. The company plans to use its funding to improve user experience, grow its user base, and add a new advisory vertical. The founder also intends to raise additional funds in the first quarter of FY26.</p>
-              </div>
-            </a>
-            <a className="tile reveal" href="https://byu.id" target="_blank" rel="noopener">
-              <div className="shine"></div>
-              <div className="tile-content">
-                <h3 className="pb-3 font-serif font-bold text-sky-400" >by.U App (Telkomsel) 📶</h3>
-                  <img
-                      alt={'Version Control & DevOps'}
-                      src="/by.U/byU-starter.png"
-                      className='card-img'
-                  />
-                <p className="tech mt-5">React Native, Firebase, Node.js, Realtime Location, Best Ui.</p>
-                <p className="role">The name "by.U" signifies "by you," emphasizing user choice and personalization of services. By.u is an all-digital mobile network provider in Indonesia, owned by Telkomsel. It is an MVNO (Mobile Virtual Network Operator) which means it uses the network infrastructure of its parent company, Telkomsel, but manages its own services, branding, and customer experience through a dedicated mobile application. The service offers various exciting promos and loyalty gifts for its users.</p>
-              </div>
-            </a>
-            <a className="tile reveal" href="https://github.com/NirmalTechDev/catChat" target="_blank" rel="noopener">
-              <div className="shine"></div>
-              <div className="tile-content">
-                <h3 className='pb-3 font-serif font-bold text-orange-400' >catChat (In Dev) 🐈‍⬛</h3>
-                  <img
-                      alt={'Version Control & DevOps'}
-                      src="/catChat.png"
-                      className='card-img'
-                  />
-                <p className="tech mt-5">React Native, Node.js, AWS, Firebase, Sockets, Camera features.</p>
-                <p className="role">Catchat is the all-in-one platform where you can Connect, Chat, Shop, and Create. From scrolling your social feed and chatting with friends to discovering marketplace deals and filming quick reels—everything you need is right here.</p>
-              </div>
-            </a>
-            <div className="tile reveal">
-              <div className="shine"></div>
-              <div className="tile-content">
-                <h3>Project Video Showcase</h3>
-                <p className="muted">Add a captivating project video or animated demo here to impress clients.</p>
-              </div>
-            </div>
-            <div className="tile reveal">
-              <div className="shine"></div>
-                <div className="flex grid-cols-2 md:grid-cols-3 gap-4">
-                    <img
-                        alt={'Version Control & DevOps'}
-                        src="https://icon-library.com/images/software-icon-png/software-icon-png-10.jpg"
-                        className='card-img'
-                        style={{ height:150, width:150 }}
-                    />
-                  <div className="tile-content flex items-center">
-                      <p className="text-4xl font-extrabold">2+ Years</p>
-                  </div>
-                </div>
-                <p className="muted flex px-10 pb-5">Professional experience in delivering scalable software solutions.</p>
-            </div>
-          </div>
-        </section>
+        <ProjectsSection />
 
           {/*<MediaGallery/>*/}
 
