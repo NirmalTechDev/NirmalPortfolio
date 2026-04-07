@@ -20,16 +20,16 @@ export default function ProjectCard({ project, onSelect }: Props) {
             <div className="shine" aria-hidden="true"></div>
             <div className="tile-content flex flex-col gap-3 text-left">
                 <div>
-                    <p className="text-sm uppercase tracking-[0.4em] text-white/50">Project</p>
-                    <h3 className="pb-3 text-2xl font-bold text-white">{project.title}</h3>
+                    <p className="text-sm uppercase tracking-[0.4em] text-[hsl(var(--muted))]">Project</p>
+                    <h3 className="pb-3 text-2xl font-bold text-[hsl(var(--text))]">{project.title}</h3>
                 </div>
-                <p className="tech text-white/80">{project.tagline}</p>
-                <p className="role text-white/60" style={{ maxHeight: "5rem", overflow: "hidden" }}>
+                <p className="tech">{project.tagline}</p>
+                <p className="role" style={{ maxHeight: "5rem", overflow: "hidden" }}>
                     {project.summary}
                 </p>
             </div>
             {thumb && (
-                <div className="relative mt-4 h-[180px] overflow-hidden rounded-2xl border border-white/10 mx-6">
+                <div className="relative mx-6 mt-4 h-[180px] w-[calc(100%-3rem)] overflow-hidden rounded-2xl border border-[hsl(var(--text)/.08)]">
                     <Image
                         src={thumb.src}
                         alt={thumb.alt}
@@ -39,7 +39,9 @@ export default function ProjectCard({ project, onSelect }: Props) {
                     />
                 </div>
             )}
-            <span className="mt-3 text-xs uppercase tracking-[0.4em] text-white/50">Tap to explore</span>
+            <span className="px-7 pb-6 pt-4 text-xs uppercase tracking-[0.4em] text-[hsl(var(--muted))]">
+                Tap to explore
+            </span>
         </button>
     );
 }
