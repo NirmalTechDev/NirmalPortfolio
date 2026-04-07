@@ -12,11 +12,42 @@ interface Props {
     onClose: () => void;
 }
 
+function SectionHeading({
+    eyebrow,
+    title,
+    description,
+}: {
+    eyebrow: string;
+    title: string;
+    description?: string;
+}) {
+    return (
+        <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/45">
+                {eyebrow}
+            </p>
+            <h3 className="mt-2 text-2xl font-semibold text-white">{title}</h3>
+            {description ? (
+                <p className="mt-2 max-w-3xl break-words text-sm leading-6 text-white/58">
+                    {description}
+                </p>
+            ) : null}
+        </div>
+    );
+}
+
 export default function ProjectCaseStudyOverlay({ project, isOpen, onClose }: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const gallerySlots = project
         ? Array.from({ length: 6 }, (_, idx) => project.gallery[idx] ?? null)
         : [];
+    const challengeOutcomePairs = project
+        ? [
+              ...project.challenges.map((item) => ({ type: "Challenge", value: item })),
+              ...project.outcomes.map((item) => ({ type: "Outcome", value: item })),
+          ]
+        : [];
+    const webLink = project?.links.web ?? project?.links.live;
 
     useEffect(() => {
         if (isOpen) {
@@ -35,6 +66,7 @@ export default function ProjectCaseStudyOverlay({ project, isOpen, onClose }: Pr
                 onClose();
             }
         };
+
         window.addEventListener("keydown", handleKey);
         return () => window.removeEventListener("keydown", handleKey);
     }, [isOpen, onClose]);
@@ -43,114 +75,187 @@ export default function ProjectCaseStudyOverlay({ project, isOpen, onClose }: Pr
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8"
+            className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 sm:px-6 sm:py-8"
             role="dialog"
             aria-modal="true"
             aria-labelledby="caseStudyTitle"
         >
             <div
-                className="absolute inset-0 bg-black/80 backdrop-blur-xl transition-opacity"
+                className="absolute inset-0 bg-black/80 backdrop-blur-xl"
                 onClick={onClose}
                 aria-hidden="true"
             />
+
             <div
                 ref={containerRef}
                 tabIndex={-1}
-                className="relative z-10 mx-auto w-full max-w-5xl max-h-[92vh] overflow-hidden rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,_hsla(var(--brand),0.35),_hsla(var(--card),0.95))] shadow-[0_40px_80px_rgba(15,23,42,0.8)]"
+                className="relative z-10 flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-[32px] border border-white/10 bg-[radial-gradient(circle_at_top,_hsla(var(--brand),0.16),_hsla(var(--card),0.98))] shadow-[0_40px_80px_rgba(15,23,42,0.8)]"
             >
-                <div className="flex w-full items-center justify-between border-b border-white/10 bg-black/60 px-6 py-4">
-                    <div>
-                        <p className="text-xs uppercase tracking-[0.3em] text-white/50">Case Study Command Center</p>
-                        <h2 id="caseStudyTitle" className="text-3xl font-bold text-white">
+                <header className="flex flex-col gap-4 border-b border-white/10 bg-black/55 px-5 py-5 sm:px-6 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                        <p className="text-xs uppercase tracking-[0.3em] text-white/45">
+                            Case Study Command Center
+                        </p>
+                        <h2
+                            id="caseStudyTitle"
+                            className="mt-2 break-words text-3xl font-bold text-white sm:text-4xl"
+                        >
                             {project.title}
                         </h2>
-                        <p className="text-sm text-white/60">{project.tagline}</p>
+                        <p className="mt-2 max-w-3xl break-words text-base leading-7 text-white/62">
+                            {project.tagline}
+                        </p>
                     </div>
+
                     <button
                         onClick={onClose}
                         aria-label="Close case study"
-                        className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/60 hover:bg-white/20"
+                        className="shrink-0 self-start rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/60 hover:bg-white/20"
                     >
                         Close
                     </button>
-                </div>
-                <div className="px-6 py-6 overflow-y-auto max-h-[75vh] space-y-6 pr-4">
-                    <div className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-                        <div className="space-y-5 text-white">
-                            <p className="text-white/80">{project.summary}</p>
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div>
-                                    <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Problem</p>
-                                    <p>{project.problem}</p>
+                </header>
+
+                <div className="max-h-[76vh] overflow-y-auto overflow-x-hidden px-5 py-5 sm:px-6 sm:py-6">
+                    <div className="space-y-6">
+                        <section className="rounded-[28px] border border-white/10 bg-white/4 p-5 sm:p-6">
+                            <SectionHeading
+                                eyebrow="Overview"
+                                title="Project Summary"
+                                description="Important context first, with enough width for readable lines."
+                            />
+
+                            <p className="mt-5 max-w-4xl break-words text-lg leading-8 text-white/82">
+                                {project.summary}
+                            </p>
+
+                            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                                <div className="min-w-0 rounded-2xl border border-white/10 bg-black/20 p-5 w-100">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
+                                        Problem
+                                    </p>
+                                    <p className="mt-3 break-words text-base leading-8 text-white/82">
+                                        {project.problem}
+                                    </p>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Role & Process</p>
-                                    <p>{project.role}</p>
-                                    <p className="text-white/70 mt-1">{project.process}</p>
+
+                                <div className="min-w-0 rounded-2xl border border-white/10 bg-black/20 p-5 w-100">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
+                                        Role
+                                    </p>
+                                    <p className="mt-3 break-words text-base leading-8 text-white/82">
+                                        {project.role}
+                                    </p>
                                 </div>
                             </div>
-                            <div>
-                                <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Tech Stack</p>
-                                <div className="mt-2 flex flex-wrap gap-2">
+
+                            <div className="mt-4 min-w-0 rounded-2xl border border-white/10 bg-black/20 p-5">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
+                                    Process
+                                </p>
+                                <p className="mt-3 break-words text-base leading-8 text-white/82">
+                                    {project.process}
+                                </p>
+                            </div>
+
+                            <div className="mt-6">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/45">
+                                    Tech Stack
+                                </p>
+                                <div className="mt-4 flex flex-wrap gap-3">
                                     {project.stack.map((tech) => (
                                         <span
                                             key={tech}
-                                            className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/70"
+                                            className="rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/72"
                                         >
                                             {tech}
                                         </span>
                                     ))}
                                 </div>
                             </div>
-                        </div>
-                        <div className="lg:sticky top-6">
-                            <RecruiterSummary summary={project.recruiterSummary} />
-                        </div>
-                    </div>
-                    <div className="grid gap-6 lg:grid-cols-2">
-                        <div className="space-y-3 text-white">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Features & Highlights</p>
-                            <ul className="list-disc space-y-2 pl-4 text-white/80">
-                                {project.features.map((feature) => (
-                                    <li key={`feature-${feature}`}>{feature}</li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div className="space-y-3 text-white">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Challenges & Outcomes</p>
-                            <div className="space-y-2 text-white/80">
-                                {project.challenges.map((challenge) => (
-                                    <p key={`challenge-${challenge}`}>Challenge: {challenge}</p>
-                                ))}
-                                {project.outcomes.map((outcome) => (
-                                    <p key={`outcome-${outcome}`} className="text-white">
-                                        Outcome: {outcome}
-                                    </p>
-                                ))}
+                        </section>
+
+                        <RecruiterSummary summary={project.recruiterSummary} />
+
+                        <section className="grid gap-6 lg:grid-cols-2">
+                            <div className="min-w-0 rounded-[28px] border border-white/10 bg-white/4 p-5 text-white sm:p-6 w-100">
+                                <SectionHeading
+                                    eyebrow="Highlights"
+                                    title="Features"
+                                    description="Key product capabilities shown as readable content cards."
+                                />
+
+                                <div className="mt-5 space-y-4">
+                                    {project.features.map((feature) => (
+                                        <div
+                                            key={`feature-${feature}`}
+                                            className="min-w-0 rounded-2xl border border-white/10 bg-black/20 px-5 py-4"
+                                        >
+                                            <p className="break-words text-base leading-8 text-white/82">
+                                                {feature}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <ProjectTimeline entries={project.timeline} />
-                    <div className="mt-6 grid gap-6 lg:grid-cols-2">
-                        <div className="space-y-3">
-                            <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Image Gallery</p>
-                            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+
+                            <div className="min-w-0 rounded-[28px] border border-white/10 bg-white/4 p-5 text-white sm:p-6 w-100">
+                                <SectionHeading
+                                    eyebrow="Delivery"
+                                    title="Challenges And Outcomes"
+                                    description="Trade-offs and measurable results grouped in one place."
+                                />
+
+                                <div className="mt-5 space-y-4">
+                                    {challengeOutcomePairs.map((item) => (
+                                        <div
+                                            key={`${item.type}-${item.value}`}
+                                            className="min-w-0 rounded-2xl border border-white/10 bg-black/20 px-5 py-4"
+                                        >
+                                            <p
+                                                className={`text-[11px] font-semibold uppercase tracking-[0.24em] ${
+                                                    item.type === "Outcome"
+                                                        ? "text-cyan-300/80"
+                                                        : "text-amber-200/70"
+                                                }`}
+                                            >
+                                                {item.type}
+                                            </p>
+                                            <p className="mt-2 break-words text-base leading-8 text-white/82">
+                                                {item.value}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+
+                        <ProjectTimeline entries={project.timeline} />
+
+                        <section className="rounded-[28px] border border-white/10 bg-white/4 p-5 sm:p-6">
+                            <SectionHeading
+                                eyebrow="Gallery"
+                                title="Project Visuals"
+                                description="Images stay responsive and never push the layout sideways."
+                            />
+
+                            <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                                 {gallerySlots.map((shot, idx) => (
                                     <div
                                         key={`gallery-${project.id}-${idx}`}
-                                        className="overflow-hidden rounded-2xl border border-white/10 bg-white/5"
+                                        className="overflow-hidden rounded-2xl border border-white/10 bg-black/20 w-39 h-50"
                                     >
-                                        <div className="relative aspect-[4/3] h-full w-full">
+                                        <div className="relative aspect-[4/3] w-full h-full">
                                             {shot ? (
                                                 <Image
                                                     src={shot.src}
                                                     alt={shot.alt}
                                                     fill
-                                                    sizes="(max-width: 768px) 33vw, 25vw"
-                                                    className="object-cover"
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                                                    className="object-fit"
                                                 />
                                             ) : (
-                                                <div className="flex h-full w-full items-center justify-center px-3 text-center text-xs uppercase tracking-[0.3em] text-white/50">
+                                                <div className="flex h-full w-full items-center justify-center px-4 text-center text-xs uppercase tracking-[0.28em] text-white/45">
                                                     Awaiting visual
                                                 </div>
                                             )}
@@ -158,53 +263,105 @@ export default function ProjectCaseStudyOverlay({ project, isOpen, onClose }: Pr
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                        <div className="space-y-4">
-                            <div>
-                                <p className="text-sm font-semibold uppercase tracking-wide text-white/60">Process Notes</p>
-                                <p className="text-white/80">{project.process}</p>
+                        </section>
+
+                        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+                            <div className="min-w-0 rounded-[28px] border border-white/10 bg-white/4 p-5 sm:p-6 w-100">
+                                <SectionHeading
+                                    eyebrow="Notes"
+                                    title="Process Notes"
+                                    description="Additional implementation context in a proper readable block."
+                                />
+                                <p className="mt-5 break-words text-base leading-8 text-white/82">
+                                    {project.process}
+                                </p>
                             </div>
-                            <div>
-                                <p className="text-sm font-semibold uppercase tracking-wide text-white/60">What I learned</p>
-                                <ul className="list-disc space-y-2 pl-4 text-white/80">
+
+                            <div className="min-w-0 rounded-[28px] border border-white/10 bg-white/4 p-5 sm:p-6 w-100">
+                                <SectionHeading
+                                    eyebrow="Retrospective"
+                                    title="What I Learned"
+                                    description="Lessons are listed as individual cards so they stay readable."
+                                />
+                                <div className="mt-5 space-y-4">
                                     {project.lessons.map((lesson) => (
-                                        <li key={`lesson-${lesson}`}>{lesson}</li>
+                                        <div
+                                            key={`lesson-${lesson}`}
+                                            className="min-w-0 rounded-2xl border border-white/10 bg-black/20 px-5 py-4"
+                                        >
+                                            <p className="break-words text-base leading-8 text-white/82">
+                                                {lesson}
+                                            </p>
+                                        </div>
                                     ))}
-                                </ul>
+                                </div>
                             </div>
-                            <div className="flex flex-wrap gap-3">
-                                {project.links.live && (
+                        </section>
+
+                        <section className="rounded-[28px] border border-white/10 bg-white/4 p-5 sm:p-6">
+                            <SectionHeading
+                                eyebrow="Links"
+                                title="Project Links"
+                                description="External links are grouped at the end for a cleaner reading flow."
+                            />
+
+                            <div className="mt-5 flex flex-wrap gap-3">
+                                {webLink ? (
                                     <a
-                                        href={project.links.live}
+                                        href={webLink}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="rounded-full border border-white/20 bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:scale-[1.01]"
+                                        className="rounded-full border border-white/20 bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:scale-[1.01]"
                                     >
-                                        View Live
+                                        Live Website
                                     </a>
-                                )}
-                                {project.links.github && (
+                                ) : null}
+
+                                {project.links.playStore ? (
+                                    <a
+                                        href={project.links.playStore}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/60"
+                                    >
+                                        Play Store
+                                    </a>
+                                ) : null}
+
+                                {project.links.appStore ? (
+                                    <a
+                                        href={project.links.appStore}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/60"
+                                    >
+                                        App Store
+                                    </a>
+                                ) : null}
+
+                                {project.links.github ? (
                                     <a
                                         href={project.links.github}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/60"
+                                        className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/60"
                                     >
                                         View GitHub
                                     </a>
-                                )}
-                                {project.links.caseStudy && (
+                                ) : null}
+
+                                {project.links.caseStudy ? (
                                     <a
                                         href={project.links.caseStudy}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/60"
+                                        className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/60"
                                     >
                                         Download Case Study
                                     </a>
-                                )}
+                                ) : null}
                             </div>
-                        </div>
+                        </section>
                     </div>
                 </div>
             </div>
