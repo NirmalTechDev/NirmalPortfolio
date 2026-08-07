@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
-    const birthdayWishUrl = process.env.BIRTHDAY_WISH_URL || "http://localhost:3001";
+    const birthdayWishUrl = process.env.BIRTHDAY_WISH_URL || "https://birthday-wish-eight-pink.vercel.app";
     return [
       {
         source: "/birthdaywish",
