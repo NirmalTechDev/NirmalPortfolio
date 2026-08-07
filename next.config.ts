@@ -38,6 +38,19 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    const birthdayWishUrl = process.env.BIRTHDAY_WISH_URL || "http://localhost:3001";
+    return [
+      {
+        source: "/birthdaywish",
+        destination: `${birthdayWishUrl}/birthdaywish`,
+      },
+      {
+        source: "/birthdaywish/:path*",
+        destination: `${birthdayWishUrl}/birthdaywish/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
