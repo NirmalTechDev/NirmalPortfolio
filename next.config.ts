@@ -43,16 +43,18 @@ const nextConfig: NextConfig = {
     if (process.env.NODE_ENV === "production" && birthdayWishUrl.includes("localhost")) {
       birthdayWishUrl = "https://birthday-wish-eight-pink.vercel.app";
     }
-    return [
-      {
-        source: "/birthdaywish",
-        destination: `${birthdayWishUrl}/birthdaywish`,
-      },
-      {
-        source: "/birthdaywish/:path*",
-        destination: `${birthdayWishUrl}/birthdaywish/:path*`,
-      },
-    ];
+    return {
+      beforeFiles: [
+        {
+          source: "/birthdaywish",
+          destination: `${birthdayWishUrl}/birthdaywish`,
+        },
+        {
+          source: "/birthdaywish/:path*",
+          destination: `${birthdayWishUrl}/birthdaywish/:path*`,
+        },
+      ],
+    };
   },
 };
 
