@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
+import Image from "next/image";
 
 const skills = [
     { name: "React", logo: "/logos/react-js.png" },
@@ -97,9 +98,11 @@ export default function FloatingSkills() {
               hover:scale-125 hover:shadow-[0_0_35px_rgba(255,255,255,0.6)]
               transition-all cursor-pointer"
                         >
-                            <img
+                            <Image
                                 src={skill.logo}
                                 alt={skill.name}
+                                width={40}
+                                height={40}
                                 className="w-10 h-10 object-contain pointer-events-none"
                             />
                         </div>

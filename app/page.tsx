@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect } from "react";
+import Image from "next/image";
 import {Download} from "lucide-react";
 import FloatingSkills from "@/app/component/FloatingSkills";
 import ProjectsSection from "@/app/component/projects/ProjectsSection";
+import { ContactForm } from "@/app/component/ContactForm";
 interface Particle {
     x: number;
     y: number;
@@ -50,19 +52,17 @@ export default function Home() {
         }, { threshold: 0.12 });
         document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-        // 3D CARD TILT + LIGHT
+        // 3D CARD TILT
         const calcTilt = (el: any, e: any) => {
             const r = el.getBoundingClientRect();
             const x = (e.clientX - r.left) / r.width;
             const y = (e.clientY - r.top) / r.height;
-            const rx = (y - 0.5) * -10;
-            const ry = (x - 0.5) * 10;
+            const rx = (y - 0.5) * -8;
+            const ry = (x - 0.5) * 8;
             el.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-            el.style.background = `radial-gradient(160px 120px at ${x * 100}% ${y * 100}%, hsl(var(--brand)/.20), transparent 60%), linear-gradient(180deg, hsl(var(--card)/.9), hsl(var(--card)/.85))`;
         };
         const resetTilt = (el: any) => {
             el.style.transform = '';
-            el.style.background = '';
         };
         document.querySelectorAll('.tilt').forEach(card => {
             card.addEventListener('mousemove', (e) => calcTilt(card, e));
@@ -71,8 +71,8 @@ export default function Home() {
 
         // MAGNETIC BUTTONS
         document.querySelectorAll('.magnet').forEach(m => {
-            const el = m as HTMLElement; // assert as HTMLElement
-            const strength = 20;
+            const el = m as HTMLElement;
+            const strength = 18;
             el.addEventListener('mousemove', (e: MouseEvent) => {
                 const r = el.getBoundingClientRect();
                 const x = e.clientX - (r.left + r.width / 2);
@@ -85,12 +85,17 @@ export default function Home() {
         // CUSTOM CURSOR
         const dot = document.getElementById('cursorDot');
         const ring = document.getElementById('cursorRing');
-        let mx = innerWidth / 2, my = innerHeight / 2;
+        let mx = -100, my = -100;
         let dx = mx, dy = my;
         let rx = mx, ry = my;
-        const moveCursor = (e: any) => { mx = e.clientX; my = e.clientY; };
+        const moveCursor = (e: any) => {
+            mx = e.clientX;
+            my = e.clientY;
+            if (dot) dot.style.opacity = '1';
+            if (ring) ring.style.opacity = '1';
+        };
         window.addEventListener('mousemove', moveCursor);
-        window.addEventListener('mousedown', () => ring && (ring.style.transform = 'scale(0.9)'));
+        window.addEventListener('mousedown', () => ring && (ring.style.transform = 'scale(0.85)'));
         window.addEventListener('mouseup', () => ring && (ring.style.transform = ''));
         function animateCursor() {
             dx += (mx - dx) * 0.35;
@@ -252,8 +257,10 @@ return (
           fontWeight: 800, letterSpacing: "-.02em", display: "flex",
           alignItems: "center", gap: 12
         }}>
-          <img src="/profile.jpeg"
+          <Image src="/profile.jpeg"
             alt="Nirmal Ranpariya Headshot"
+            width={32}
+            height={32}
             style={{
               width: 32, height: 32, borderRadius: "50%", objectFit: "cover",
               border: "2px solid hsl(var(--brand))"
@@ -269,8 +276,11 @@ return (
       <main>
         <section className="hero section wrap">
           <div className="hero-image reveal in">
-            <img src="/profile.jpeg"
-              alt="Nirmal Ranpariya Profile Photo" />
+            <Image src="/profile.jpeg"
+              alt="Nirmal Ranpariya Profile Photo"
+              width={400}
+              height={400}
+              priority />
           </div>
           <div className="hero-content reveal in">
             <h1>Nirmal <span
@@ -302,56 +312,68 @@ return (
             Core Skills & Expertise
           </h2>
             <FloatingSkills/>
-          <div className="grid" style={{ marginTop: "var(--gap)" }}>
-            <article className="card tilt reveal">
-                <img
+          <div className="home-grid" style={{ marginTop: "var(--gap)" }}>
+            <article className="home-card tilt reveal">
+                <Image
                     alt={'Mobile App Development'}
                     src="https://static.tildacdn.com/tild3730-3836-4333-b738-333762396635/1709507970_smartphon.jpg"
+                    width={600}
+                    height={400}
                     className='card-img'
                 />
                 <h3 className="pt-2">Mobile App Development</h3>
               <p>React Native, performance optimization, and seamless deployment on both Android & iOS platforms.</p>
             </article>
-            <article className="card tilt reveal">
-                <img
+            <article className="home-card tilt reveal">
+                <Image
                     alt={'Web Development (Frontend)'}
                     src="https://www.simplilearn.com/ice9/free_resources_article_thumb/full_front_back.jpg"
+                    width={600}
+                    height={400}
                     className='card-img'
                 />
               <h3 className="pt-2" >Web Development (Frontend)</h3>
               <p>React.js, crafting responsive, animated UIs with a focus on exceptional UX design using Tailwind CSS.</p>
             </article>
-            <article className="card tilt reveal">
-                <img
+            <article className="home-card tilt reveal">
+                <Image
                     alt={'Backend & API Services'}
                     src="https://miro.medium.com/v2/resize:fit:1200/1*ee5Xp-vKG6kcMCO_JDZmmQ.png"
+                    width={600}
+                    height={400}
                     className='card-img'
                 />
               <h3 className="pt-2" >Backend & API Services</h3>
-              <p>Node.js, building robust REST APIs with Express.js , foundational knowledge in AWS and cloud architecture.</p>
+              <p>Node.js, building robust REST APIs with Express.js, foundational knowledge in AWS and cloud architecture.</p>
             </article>
-            <article className="card tilt reveal">
-                <img
+            <article className="home-card tilt reveal">
+                <Image
                     alt={'Cloud & Databases'}
                     src="https://cdn.dribbble.com/users/3859449/screenshots/9191591/sql_query_optimization.jpg"
+                    width={600}
+                    height={400}
                     className='card-img'
                 />
               <h3 className="pt-2" >Cloud & Databases</h3>
               <p>Specialist in Firebase (Realtime DB, Firestore, Auth), and skilled in MongoDB and SQL/NoSQL fundamentals.</p>
             </article>
-            <article className="card tilt reveal">
-                <img
+            <article className="home-card tilt reveal">
+                <Image
                     alt={'Version Control & DevOps'}
                     src="https://miro.medium.com/v2/resize:fit:1200/1*lp8r5b4o-zryHxdKHynlyw.png"
+                    width={600}
+                    height={400}
                     className='card-img'
                 />
               <h3 className="pt-2" >Version Control & DevOps</h3>
-              <p>Proficient with Git , GitHub , and GitLab . Basic understanding and implementation of CI/CD pipelines.</p>
+              <p>Proficient with Git, GitHub, and GitLab. Basic understanding and implementation of CI/CD pipelines.</p>
             </article>
-            <article className="card tilt reveal">
-                <img
+            <article className="home-card tilt reveal">
+                <Image
                     alt={'Design & Multimedia'}
                     src="https://prezibase.com/wp-content/uploads/2018/08/creative-abstract-3d-design-agency-multimedia-presentation-template-for-prezi-and-powerpoint-Slide1-4.jpg"
+                    width={600}
+                    height={400}
                     className='card-img'
                 />
               <h3 className="pt-2" >Design & Multimedia</h3>
@@ -415,43 +437,49 @@ return (
           <section className="section wrap">
           <blockquote className="quote reveal">
               “Fueled by a deep passion for full-stack development , I specialize in
-              crafting seamless, high-performance apps using React Native, React.js, and Node.js. I don't just
+              crafting seamless, high-performance apps using React Native, React.js, and Node.js. I don&apos;t just
               build apps—I solve real-world problems with clean, scalable code.”
               <small>— Nirmal Ranpariya | Mission Statement</small>
           </blockquote>
          </section>
         <section className="section wrap">
-          <div className="gallery grid">
-            <div className="tile reveal sm:col-span-12" style={{ gridColumn: "" }}>
+          <div className="gallery">
+            <div className="tile reveal" style={{ gridColumn: "span 2" }}>
               <div className="shine"></div>
               <div className="tile-content">
-                  <img
-                      alt={'Version Control & DevOps'}
+                  <Image
+                      alt={'Achievements'}
                       src="/trofy.jpg"
+                      width={600}
+                      height={400}
                       className='card-img'
                   />
                 <h3 style={{ margin: "0 0 8px" }}>Achievements</h3>
                 <p className="muted">Consistent delivery of performant, scalable mobile/web apps. Strong full-stack coding and problem-solving skills.Crafting smooth, fast, and scalable digital experiences—driven by solid full-stack engineering, clean architecture, and a passion for solving complex problems.</p>
               </div>
             </div>
-            <div className="tile reveal sm:col-span-12" style={{ gridColumn: "" }}>
+            <div className="tile reveal" style={{ gridColumn: "span 2" }}>
               <div className="shine"></div>
               <div className="tile-content">
-                  <img
-                      alt={'Version Control & DevOps'}
+                  <Image
+                      alt={'Blog & Articles'}
                       src="/blog-post.jpeg"
+                      width={600}
+                      height={400}
                       className='card-img'
                   />
                 <h3 className="mt-2" style={{ margin: "0 0 8px", }}>Blog & Articles</h3>
                 <p className="muted">Planning to publish technical tutorials and deep dives on React Native, React.js, and backend development. On a mission to publish insightful tutorials and deep dives covering React Native, React.js, and backend development—breaking down complex topics into accessible, real-world, developer-friendly content.</p>
               </div>
             </div>
-            <a className="tile reveal sm:col-span-12" href="/Nirmal_Ranpariya_Resume.pdf" download="Nirmal_Ranpariya_Resume.pdf"  style={{ gridColumn: "" }}>
+            <a className="tile reveal" href="/Nirmal_Ranpariya_Resume.pdf" download="Nirmal_Ranpariya_Resume.pdf" style={{ gridColumn: "span 2" }}>
               <div className="shine"></div>
               <div className="tile-content">
-                  <img
-                      alt={'Version Control & DevOps'}
+                  <Image
+                      alt={'Download Resume'}
                       src="/CVPlaceholder.jpg"
+                      width={600}
+                      height={400}
                       className='card-img'
                   />
                   <div className="flex flex-row items-center mt-2">
@@ -465,123 +493,77 @@ return (
         </section>
 
         <section id="contact" className="section wrap">
-          <div className="grid">
-            <div className="card reveal" style={{ gridColumn: "" }}>
-              <h3>Let's Build Your Masterpiece</h3>
+          <div className="home-grid">
+            <div
+              className="reveal"
+              style={{
+                gridColumn: "span 6", borderRadius: "var(--radius)", padding: "clamp(20px, 2.5vmax, 28px)",
+                background: "hsl(var(--card))", boxShadow: "var(--elev)", border: "1px solid hsl(var(--text)/.08)",
+                display: "flex", flexDirection: "column", justifyContent: "space-between"
+              }}
+            >
+              <h3>Let&apos;s Build Your Masterpiece</h3>
               <p className="muted">
                 I am open to exciting projects and collaborations worldwide. Tell me about your
-                vision, and let's discuss how my full-stack expertise can bring it to life.
+                vision, and let&apos;s discuss how my full-stack expertise can bring it to life.
               </p>
-              <form style={{ marginTop: 12, display: "grid", gap: 12 }} >
-                <input placeholder="Your Name or Company" aria-label="Name"
-                  style={{
-                    padding: "14px 16px", borderRadius: 12, background: "hsl(var(--bg)/.6)",
-                    border: "1px solid hsl(var(--text)/.1)", color: "inherit", outline: "none"
-                  }} />
-                <input placeholder="Your Email" aria-label="Email" type="email"
-                  style={{
-                    padding: "14px 16px", borderRadius: 12, background: "hsl(var(--bg)/.6)",
-                    border: "1px solid hsl(var(--text)/.1)", color: "inherit", outline: "none"
-                  }} />
-                <textarea placeholder="Tell me what masterpiece you want to build (or ask a question)" rows={4}
-                  aria-label="Message"
-                  style={{
-                    padding: "14px 16px", borderRadius: 12, background: "hsl(var(--bg)/.6)",
-                    border: "1px solid hsl(var(--text)/.1)", color: "inherit", outline: "none"
-                  }}></textarea>
-                <div className="goo">
-                  <button type="submit" className="btn primary magnet">Send Message ✦</button>
-                  <button type="reset" className="btn magnet">Reset</button>
-                </div>
-              </form>
+              <ContactForm />
             </div>
-              <div className="card reveal" style={{ gridColumn: "" }}>
-                  <h3 style={{ marginBottom: 12 }}>Contact & Links</h3>
 
-                  <ul
-                      className="muted"
-                      style={{
-                          margin: 0,
-                          padding: 0,
-                          listStyle: "none",
-                          display: "grid",
-                          gap: 10,
-                          fontSize: "0.95rem",
-                          lineHeight: 1.6,
-                      }}
-                  >
-                      <li className="p-2">
-                          📧 <strong>Email:</strong>{" "}
-                          <a
-                              href="mailto:nirmatech.dev@gmail.com"
-                              className="muted"
-                              style={{ color: "inherit", textDecoration: "underline" }}
-                          >
-                              nirmatech.dev@gmail.com
-                          </a>
-                      </li>
-
-                      <li className="p-2">
-                          📱 <strong>Phone:</strong>{" "}
-                          <a
-                              href="tel:+919664648614"
-                              className="muted"
-                              style={{ color: "inherit", textDecoration: "underline" }}
-                          >
-                              +91 9664648614
-                          </a>
-                      </li>
-
-                      <li className="p-2">
-                          💻 <strong>GitHub:</strong>{" "}
-                          <a
-                              href="https://github.com/NirmalTechDev"
-                              target="_blank"
-                              className="muted"
-                              style={{ color: "inherit", textDecoration: "underline" }}
-                          >
-                              NirmalTechDev
-                          </a>
-                      </li>
-
-                      <li className="p-2">
-                          🔗 <strong>LinkedIn:</strong>{" "}
-                          <a
-                              href="https://www.linkedin.com/in/nirmal-ranpariya-625766266"
-                              target="_blank"
-                              className="muted"
-                              style={{ color: "inherit", textDecoration: "underline" }}
-                          >
-                              Nirmal Ranpariya
-                          </a>
-                      </li>
-
-                      <li className="p-2">
-                          💼 <strong>Upwork:</strong>{" "}
-                          <a
-                              href="https://www.upwork.com/freelancers/~0139b1b97fb2cf2377"
-                              target="_blank"
-                              className="muted"
-                              style={{ color: "inherit", textDecoration: "underline" }}
-                          >
-                              Upwork Profile
-                          </a>
-                      </li>
-
-                      <li className="p-2">
-                          🧠 <strong>Stack Overflow:</strong>{" "}
-                          <a
-                              href="https://stackoverflow.com/users/27369682/nirmal-patel"
-                              target="_blank"
-                              className="muted"
-                              style={{ color: "inherit", textDecoration: "underline" }}
-                          >
-                              Nirmal Patel
-                          </a>
-                      </li>
-                  </ul>
-              </div>
-
+            <div
+              className="reveal"
+              style={{
+                gridColumn: "span 6", borderRadius: "var(--radius)", padding: "clamp(20px, 2.5vmax, 28px)",
+                background: "hsl(var(--card))", boxShadow: "var(--elev)", border: "1px solid hsl(var(--text)/.08)",
+                display: "flex", flexDirection: "column", justifyContent: "space-between"
+              }}
+            >
+              <h3 style={{ marginBottom: 12 }}>Contact &amp; Links</h3>
+              <ul
+                className="muted"
+                style={{
+                  margin: 0, padding: 0, listStyle: "none",
+                  display: "grid", gap: 10, fontSize: "0.95rem", lineHeight: 1.6,
+                }}
+              >
+                <li className="p-2">
+                  📧 <strong>Email:</strong>{" "}
+                  <a href="mailto:nirmatech.dev@gmail.com" className="muted" style={{ color: "inherit", textDecoration: "underline" }}>
+                    nirmatech.dev@gmail.com
+                  </a>
+                </li>
+                <li className="p-2">
+                  📱 <strong>Phone:</strong>{" "}
+                  <a href="tel:+919664648614" className="muted" style={{ color: "inherit", textDecoration: "underline" }}>
+                    +91 9664648614
+                  </a>
+                </li>
+                <li className="p-2">
+                  💻 <strong>GitHub:</strong>{" "}
+                  <a href="https://github.com/NirmalTechDev" target="_blank" rel="noreferrer" className="muted" style={{ color: "inherit", textDecoration: "underline" }}>
+                    NirmalTechDev
+                  </a>
+                </li>
+                <li className="p-2">
+                  🔗 <strong>LinkedIn:</strong>{" "}
+                  <a href="https://www.linkedin.com/in/nirmal-ranpariya-625766266" target="_blank" rel="noreferrer" className="muted" style={{ color: "inherit", textDecoration: "underline" }}>
+                    Nirmal Ranpariya
+                  </a>
+                </li>
+                <li className="p-2">
+                  💼 <strong>Upwork:</strong>{" "}
+                  <a href="https://www.upwork.com/freelancers/~0139b1b97fb2cf2377" target="_blank" rel="noreferrer" className="muted" style={{ color: "inherit", textDecoration: "underline" }}>
+                    Upwork Profile
+                  </a>
+                </li>
+                <li className="p-2">
+                  🧠 <strong>Stack Overflow:</strong>{" "}
+                  <a href="https://stackoverflow.com/users/27369682/nirmal-patel" target="_blank" rel="noreferrer" className="muted" style={{ color: "inherit", textDecoration: "underline" }}>
+                    Nirmal Patel
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </section>
       </main>
