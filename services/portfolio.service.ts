@@ -1,5 +1,5 @@
 import { CMSAbout, CMSHero, CMSProject, CMSSkill } from "@/types/portfolio";
-import { projects as defaultProjects } from "@/app/component/projects/projects.data";
+import { projects as defaultProjects } from "@/content/projects";
 import { dashboardFetch } from "@/lib/dashboard-fetch";
 import {
   toCMSProjects,
@@ -10,25 +10,28 @@ import {
   BackendSkill,
 } from "@/lib/collective-adapters";
 
+const storeLink = (p: (typeof defaultProjects)[number], label: string) =>
+  p.links.find((l) => l.label === label)?.href;
+
 let fallbackProjects: CMSProject[] = defaultProjects.map((p, idx) => ({
-  id: p.id,
+  id: p.slug,
   slug: p.slug,
   title: p.title,
-  tagline: p.tagline,
-  summary: p.summary,
-  problem: p.problem,
-  role: p.role,
-  process: p.process,
-  stack: p.stack,
-  features: p.features,
-  challenges: p.challenges,
-  outcomes: p.outcomes,
+  tagline: p.oneLiner,
+  summary: p.context.join(" "),
+  problem: (p.problem ?? []).join(" "),
+  role: p.role.intro,
+  process: "",
+  stack: p.stack.flatMap((s) => s.items),
+  features: p.role.items,
+  challenges: (p.challenges ?? []).map((c) => c.title),
+  outcomes: p.outcome,
   order: idx + 1,
-  liveUrl: p.links.live || p.links.web,
-  githubUrl: p.links.github,
-  playStoreUrl: p.links.playStore,
-  appStoreUrl: p.links.appStore,
-  imageSrc: p.gallery[0]?.src || "/trofy.jpg",
+  liveUrl: p.links.find((l) => !/Google Play|App Store/.test(l.label))?.href,
+  githubUrl: undefined,
+  playStoreUrl: storeLink(p, "Google Play"),
+  appStoreUrl: storeLink(p, "App Store"),
+  imageSrc: p.cover?.src || "/profile.jpeg",
 }));
 
 let fallbackSkills: CMSSkill[] = [
