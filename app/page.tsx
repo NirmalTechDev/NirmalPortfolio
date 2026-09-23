@@ -2,10 +2,13 @@
 
 import React, { useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {Download} from "lucide-react";
 import FloatingSkills from "@/app/component/FloatingSkills";
 import ProjectsSection from "@/app/component/projects/ProjectsSection";
 import { ContactForm } from "@/app/component/ContactForm";
+import { JsonLd } from "@/app/components/JsonLd";
+import { homeJsonLd, PROFILE_IMAGE } from "@/lib/seo";
 interface Particle {
     x: number;
     y: number;
@@ -30,10 +33,6 @@ export default function Home() {
         if (themeBtn) themeBtn.addEventListener('click', handleThemeClick);
 
         // About Me static role
-        const greeting = document.getElementById('greeting');
-        if (greeting) greeting.innerHTML =
-            "Software Developer | Mobile App Development | React Native | React.js | Node.js | Full-Stack | 2+ Years Experience";
-
         // SCROLL PROGRESS
         const progress = document.getElementById('progress');
         const setProgress = () => {
@@ -219,6 +218,7 @@ export default function Home() {
     }, []);
 return (
     <>
+      <JsonLd data={homeJsonLd()} />
       <div className="bg-gradient" aria-hidden="true"></div>
       <canvas id="bg-canvas" aria-hidden="true"></canvas>
       {/* SVG noise overlay */}
@@ -257,8 +257,8 @@ return (
           fontWeight: 800, letterSpacing: "-.02em", display: "flex",
           alignItems: "center", gap: 12
         }}>
-          <Image src="/profile.jpeg"
-            alt="Nirmal Ranpariya Headshot"
+          <Image src={PROFILE_IMAGE}
+            alt="Nirmal Ranpariya, React Native Developer and Software Engineer"
             width={32}
             height={32}
             style={{
@@ -268,16 +268,18 @@ return (
           ⚡ Nirmal Ranpariya
         </div>
         <nav style={{ display: "flex", gap: 12, alignItems: "center" }}>
+          <Link className="btn" href="/about">About</Link>
+          <Link className="btn" href="/projects">Projects</Link>
           <button className="btn" id="themeBtn" aria-label="Toggle theme">Toggle Theme</button>
-          <a className="btn primary magnet" href="#contact">Get in Touch</a>
+          <Link className="btn primary magnet" href="/contact">Get in Touch</Link>
         </nav>
       </header>
 
       <main>
         <section className="hero section wrap">
           <div className="hero-image reveal in">
-            <Image src="/profile.jpeg"
-              alt="Nirmal Ranpariya Profile Photo"
+            <Image src={PROFILE_IMAGE}
+              alt="Nirmal Ranpariya, React Native Developer and Software Engineer"
               width={400}
               height={400}
               priority />
@@ -291,10 +293,13 @@ return (
                 color: "transparent"
               }}>Ranpariya</span>
             </h1>
-            <p className="muted" id="greeting"></p>
+            <p className="muted" id="greeting">
+              React Native Developer & Software Engineer building mobile apps, web products, APIs, and Firebase-powered experiences.
+            </p>
             <div className="cta goo">
               <a className="btn primary magnet" href="#projects">View Projects ✦</a>
               <a className="btn magnet" href="#skills">My Core Skills</a>
+              <Link className="btn magnet" href="/about">About Nirmal Ranpariya</Link>
             </div>
           </div>
         </section>
@@ -384,56 +389,6 @@ return (
 
         <ProjectsSection />
 
-          {/*<MediaGallery/>*/}
-
-        {/*<section id="media-gallery" className="section wrap">*/}
-        {/*  <h2 className="reveal" style={{ textAlign: "center", fontSize: "var(--subtitle)", marginBottom: "var(--gap)" }}>*/}
-        {/*    Media Gallery*/}
-        {/*  </h2>*/}
-        {/*  <div className="gallery">*/}
-        {/*    <a className="tile reveal" href="https://via.placeholder.com/400x300.png?text=Screenshot+1" target="_blank"*/}
-        {/*      rel="noopener" style={{ position: "relative", overflow: "hidden" }}>*/}
-        {/*      <div className="shine"></div>*/}
-        {/*      <div className="tile-content">*/}
-        {/*        <h3>Screenshot 1</h3>*/}
-        {/*        <p className="tech">App UI Design</p>*/}
-        {/*      </div>*/}
-        {/*      <img src="https://via.placeholder.com/400x300.png?text=Screenshot+1" alt="Screenshot 1"*/}
-        {/*        style={{*/}
-        {/*          position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",*/}
-        {/*          borderRadius: "calc(var(--radius) * 1.6)", opacity: 0.85*/}
-        {/*        }} />*/}
-        {/*    </a>*/}
-        {/*    <a className="tile reveal" href="https://via.placeholder.com/400x300.png?text=Screenshot+2" target="_blank"*/}
-        {/*      rel="noopener" style={{ position: "relative", overflow: "hidden" }}>*/}
-        {/*      <div className="shine"></div>*/}
-        {/*      <div className="tile-content">*/}
-        {/*        <h3>Screenshot 2</h3>*/}
-        {/*        <p className="tech">Landing Page</p>*/}
-        {/*      </div>*/}
-        {/*      <img src="https://via.placeholder.com/400x300.png?text=Screenshot+2" alt="Screenshot 2"*/}
-        {/*        style={{*/}
-        {/*          position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",*/}
-        {/*          borderRadius: "calc(var(--radius) * 1.6)", opacity: 0.85*/}
-        {/*        }} />*/}
-        {/*    </a>*/}
-        {/*    <div className="tile reveal" style={{ gridColumn: "span 2", position: "relative", overflow: "hidden" }}>*/}
-        {/*      <div className="shine"></div>*/}
-        {/*      <div className="tile-content" style={{ zIndex: 3, position: "relative" }}>*/}
-        {/*        <h3>Project Demo Video</h3>*/}
-        {/*        <p className="tech">App walkthrough</p>*/}
-        {/*      </div>*/}
-        {/*      <video controls*/}
-        {/*        style={{*/}
-        {/*          position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover",*/}
-        {/*          borderRadius: "calc(var(--radius) * 1.6)"*/}
-        {/*        }}>*/}
-        {/*        <source src="https://interactive-examples.mdn.mozilla.net/media/examples/flower.webm" type="video/webm" />*/}
-        {/*        Your browser does not support the video tag.*/}
-        {/*      </video>*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</section>*/}
           <section className="section wrap">
           <blockquote className="quote reveal">
               “Fueled by a deep passion for full-stack development , I specialize in
@@ -458,20 +413,20 @@ return (
                 <p className="muted">Consistent delivery of performant, scalable mobile/web apps. Strong full-stack coding and problem-solving skills.Crafting smooth, fast, and scalable digital experiences—driven by solid full-stack engineering, clean architecture, and a passion for solving complex problems.</p>
               </div>
             </div>
-            <div className="tile reveal" style={{ gridColumn: "span 2" }}>
+            <Link className="tile reveal" href="/about" style={{ gridColumn: "span 2" }}>
               <div className="shine"></div>
               <div className="tile-content">
                   <Image
-                      alt={'Blog & Articles'}
-                      src="/blog-post.jpeg"
+                      alt={'Nirmal Ranpariya professional profile'}
+                      src={PROFILE_IMAGE}
                       width={600}
                       height={400}
                       className='card-img'
                   />
-                <h3 className="mt-2" style={{ margin: "0 0 8px", }}>Blog & Articles</h3>
-                <p className="muted">Planning to publish technical tutorials and deep dives on React Native, React.js, and backend development. On a mission to publish insightful tutorials and deep dives covering React Native, React.js, and backend development—breaking down complex topics into accessible, real-world, developer-friendly content.</p>
+                <h3 className="mt-2" style={{ margin: "0 0 8px", }}>About Nirmal Ranpariya</h3>
+                <p className="muted">Read more about my React Native, full-stack engineering, backend API, Firebase, and product development work.</p>
               </div>
-            </div>
+            </Link>
             <a className="tile reveal" href="/Nirmal_Ranpariya_Resume.pdf" download="Nirmal_Ranpariya_Resume.pdf" style={{ gridColumn: "span 2" }}>
               <div className="shine"></div>
               <div className="tile-content">
@@ -486,7 +441,7 @@ return (
                     <p style={{ margin: "0 0 8px", fontSize: 23, fontWeight:'500'}}>Download Resume</p>
                     <Download className="ml-3 mb-2"/>
                   </div>
-                <p className="muted">Access my full CV and professional history as a PDF (link placeholder).</p>
+                <p className="muted">Download my current resume as a PDF with professional experience, skills, and project background.</p>
               </div>
             </a>
           </div>
@@ -554,12 +509,6 @@ return (
                   💼 <strong>Upwork:</strong>{" "}
                   <a href="https://www.upwork.com/freelancers/~0139b1b97fb2cf2377" target="_blank" rel="noreferrer" className="muted" style={{ color: "inherit", textDecoration: "underline" }}>
                     Upwork Profile
-                  </a>
-                </li>
-                <li className="p-2">
-                  🧠 <strong>Stack Overflow:</strong>{" "}
-                  <a href="https://stackoverflow.com/users/27369682/nirmal-patel" target="_blank" rel="noreferrer" className="muted" style={{ color: "inherit", textDecoration: "underline" }}>
-                    Nirmal Patel
                   </a>
                 </li>
               </ul>

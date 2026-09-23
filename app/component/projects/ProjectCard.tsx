@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import type { ProjectCaseStudy } from "./projects.data";
 
 interface Props {
@@ -12,11 +13,7 @@ export default function ProjectCard({ project, onSelect }: Props) {
     const thumb = project.gallery[0];
 
     return (
-        <button
-            type="button"
-            onClick={() => onSelect(project)}
-            className="tile reveal group flex flex-col items-start justify-between"
-        >
+        <article className="tile reveal group flex flex-col items-start justify-between">
             <div className="shine" aria-hidden="true"></div>
             <div className="tile-content flex flex-col gap-3 text-left">
                 <div>
@@ -39,9 +36,21 @@ export default function ProjectCard({ project, onSelect }: Props) {
                     />
                 </div>
             )}
-            <span className="px-7 pb-6 pt-4 text-xs uppercase tracking-[0.4em] text-[hsl(var(--muted))]">
-                Tap to explore
-            </span>
-        </button>
+            <div className="flex flex-wrap gap-3 px-7 pb-6 pt-4">
+                <Link
+                    href={`/projects/${project.slug}`}
+                    className="text-xs uppercase tracking-[0.35em] text-[hsl(var(--text))] underline underline-offset-4"
+                >
+                    Read case study
+                </Link>
+                <button
+                    type="button"
+                    onClick={() => onSelect(project)}
+                    className="text-xs uppercase tracking-[0.35em] text-[hsl(var(--muted))] underline underline-offset-4"
+                >
+                    Quick preview
+                </button>
+            </div>
+        </article>
     );
 }

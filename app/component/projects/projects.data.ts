@@ -164,7 +164,7 @@ export const projects: ProjectCaseStudy[] = [
     },
     {
         id: "collective-ledger-os",
-        slug: "collective-ledger-os",
+        slug: "collective-ledger",
         title: "Collective Ledger OS",
         tagline: "Community finance management with precision, transparency, and governance",
         summary:
