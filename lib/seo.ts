@@ -14,7 +14,7 @@ export const professionalProfiles = {
 export const nirmalIdentity = {
   name: "Nirmal Ranpariya",
   title: "React Native Developer & Software Engineer",
-  email: "nirmatech.dev@gmail.com",
+  email: "nirmaltech.dev@gmail.com",
   phone: "+919664648614",
   location: "Surat, India",
   description:
