@@ -16,20 +16,21 @@ export const nirmalIdentity = {
   title: "React Native Developer & Software Engineer",
   email: "nirmatech.dev@gmail.com",
   phone: "+919664648614",
-  location: "India",
+  location: "Surat, India",
   description:
     "Nirmal Ranpariya is a React Native Developer and Software Engineer specializing in mobile applications, React Native, TypeScript, Node.js, Firebase, APIs, and modern product development.",
   skills: [
     "React Native",
-    "React.js",
-    "Next.js",
     "TypeScript",
     "JavaScript",
+    "React",
+    "Next.js",
     "Node.js",
     "Firebase",
-    "MongoDB",
     "REST APIs",
     "Mobile app development",
+    "Android",
+    "iOS",
   ],
 };
 
@@ -42,7 +43,7 @@ export function pageMetadata({
   title,
   description,
   path = "/",
-  image = PROFILE_IMAGE,
+  image = "/opengraph-image",
 }: {
   title: string;
   description: string;
@@ -64,18 +65,13 @@ export function pageMetadata({
       siteName: "Nirmal Ranpariya",
       title,
       description,
-      images: [
-        {
-          url: imageUrl,
-          alt: "Nirmal Ranpariya, React Native Developer and Software Engineer",
-        },
-      ],
+      ...(imageUrl ? { images: [{ url: imageUrl, alt: title }] } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [imageUrl],
+      ...(imageUrl ? { images: [imageUrl] } : {}),
     },
   };
 }
@@ -92,7 +88,17 @@ export function personJsonLd() {
     telephone: nirmalIdentity.phone,
     address: {
       "@type": "PostalAddress",
+      addressLocality: "Surat",
+      addressRegion: "Gujarat",
       addressCountry: "IN",
+    },
+    worksFor: {
+      "@type": "Organization",
+      name: "Ofniinfo Software Solutions Pvt. Ltd.",
+    },
+    alumniOf: {
+      "@type": "CollegeOrUniversity",
+      name: "Saurashtra University",
     },
     knowsAbout: nirmalIdentity.skills,
     sameAs: Object.values(professionalProfiles),
@@ -155,4 +161,44 @@ export function profilePageJsonLd() {
       personJsonLd(),
     ],
   };
+}
+
+/** WebPage (+ optional breadcrumb) graph for inner pages. */
+export function pageJsonLd({
+  path,
+  name,
+  description,
+  crumbs = [],
+}: {
+  path: string;
+  name: string;
+  description: string;
+  crumbs?: { name: string; path: string }[];
+}) {
+  const url = absoluteUrl(path);
+  const graph: Record<string, unknown>[] = [
+    {
+      "@type": "WebPage",
+      "@id": `${url}#webpage`,
+      url,
+      name,
+      description,
+      isPartOf: { "@id": WEBSITE_ID },
+      about: { "@id": PERSON_ID },
+      author: { "@id": PERSON_ID },
+    },
+  ];
+  if (crumbs.length) {
+    graph.push({
+      "@type": "BreadcrumbList",
+      "@id": `${url}#breadcrumb`,
+      itemListElement: [{ name: "Home", path: "/" }, ...crumbs].map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: c.name,
+        item: absoluteUrl(c.path),
+      })),
+    });
+  }
+  return { "@context": "https://schema.org", "@graph": graph };
 }

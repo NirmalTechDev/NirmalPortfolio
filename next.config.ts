@@ -13,6 +13,13 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com" },
     ],
   },
+  async redirects() {
+    return [
+      { source: "/projects", destination: "/work", permanent: true },
+      { source: "/projects/catchat", destination: "/work", permanent: true },
+      { source: "/projects/:slug", destination: "/work/:slug", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {
