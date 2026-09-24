@@ -165,7 +165,10 @@ export async function collectiveApiFetch<T>(
     if (err instanceof Error && err.name === "TimeoutError") {
       throw new ApiError(`Request to ${path} timed out after ${timeout}ms`, 504, "TIMEOUT");
     }
-    throw new ApiError(`Network error: ${(err as Error).message}`, 503, "NETWORK_ERROR");
+    // undici reports every connection failure as "fetch failed"; the real reason is on `cause`.
+    const cause = (err as { cause?: { code?: string; message?: string } }).cause;
+    const detail = cause?.code || cause?.message || (err as Error).message;
+    throw new ApiError(`Network error: ${detail}`, 503, "NETWORK_ERROR");
   }
 
   // 401 → try one token refresh then retry

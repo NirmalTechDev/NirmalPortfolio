@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ENGAGEMENTS = ["Full-time role", "Contract or freelance project", "Technical consulting", "Just exploring"];
 
@@ -10,6 +10,11 @@ export function ContactForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [note, setNote] = useState("");
+
+  // Wake the backend (free-tier hosting sleeps) while the visitor is typing.
+  useEffect(() => {
+    fetch("/api/contact", { method: "GET", keepalive: true }).catch(() => {});
+  }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
