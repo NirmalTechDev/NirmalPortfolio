@@ -68,6 +68,8 @@ export const capabilities: { group: string; items: { name: string; note?: string
       { name: "React" },
       { name: "Next.js", note: "working" },
       { name: "Redux / Redux Saga" },
+      { name: "Zustand" },
+      { name: "Tailwind CSS" },
     ],
   },
   {
@@ -149,7 +151,7 @@ export const journey = [
   {
     year: "2026",
     label: "Whole products",
-    text: "Designed and built Collective Ledger OS end to end, from the finance engine to the interface, and deployed it.",
+    text: "Designed and built Collective Ledger end to end, from the finance engine to the interface, and deployed it.",
   },
 ] as const;
 

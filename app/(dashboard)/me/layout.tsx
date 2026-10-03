@@ -5,7 +5,8 @@ import { AuthProvider } from "@/components/providers/auth-provider";
 
 export const metadata: Metadata = {
   title: "Staff Command Center ✦ Nirmal Ranpariya",
-  description: "Production command center dashboard for managing Personal Portfolio, Collective Ledger SaaS, API Monitoring, and AI Workspace.",
+  description: "Private staff dashboard.",
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

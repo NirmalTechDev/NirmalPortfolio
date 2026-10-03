@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  compress: true,
   images: {
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "https", hostname: "static.tildacdn.com" },
       { protocol: "https", hostname: "www.simplilearn.com" },
@@ -43,6 +46,12 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Private or non-portfolio areas: never index.
+      { source: "/me/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      { source: "/api/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      { source: "/birthdaywish/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      // Case-study images change rarely; let the CDN and browsers keep them.
+      { source: "/work/:dir/:file(.+\\.(?:jpg|png|webp))", headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }] },
     ];
   },
   async rewrites() {

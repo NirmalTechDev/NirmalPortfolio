@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { Clause, Figure, Flow, NumberedList } from "@/components/site/parts";
 import { getProject, projects } from "@/content/projects";
-import { pageJsonLd, pageMetadata } from "@/lib/seo";
+import { pageJsonLd, pageMetadata, projectJsonLd } from "@/lib/seo";
 
 type Params = { slug: string };
 
@@ -106,20 +107,42 @@ export default async function CasePage({ params }: { params: Promise<Params> }) 
   return (
     <>
       <JsonLd
-        data={pageJsonLd({
-          path: `/work/${p.slug}`,
-          name: `${p.title}: case study | Nirmal Ranpariya`,
-          description,
-          crumbs: [
-            { name: "Work", path: "/work" },
-            { name: p.title, path: `/work/${p.slug}` },
-          ],
-        })}
+        data={(() => {
+          const base = pageJsonLd({
+            path: `/work/${p.slug}`,
+            name: `${p.title}: case study | Nirmal Ranpariya`,
+            description,
+            crumbs: [
+              { name: "Work", path: "/work" },
+              { name: p.title, path: `/work/${p.slug}` },
+            ],
+          });
+          const work = projectJsonLd({
+            slug: p.slug,
+            title: p.title,
+            oneLiner: p.oneLiner,
+            kind: p.kind,
+            cover: p.cover,
+            links: p.links.filter((l) => l.href.startsWith("https://")),
+            independent: p.spec.some(([k, v]) => k === "Type" && v === "Independent product"),
+            mobile: p.kind.includes("Mobile"),
+          });
+          return { ...base, "@graph": [...(base["@graph"] as Record<string, unknown>[]), work] };
+        })()}
       />
 
       <section className="case-hero" data-rail={`${p.title}`}>
         <div className="frame">
           <Clause n={p.number} label={p.kind} />
+          {p.icon && (
+            <Image
+              src={p.icon.src}
+              alt={p.icon.alt}
+              width={72}
+              height={72}
+              style={{ borderRadius: "1.1rem", marginTop: "var(--s-5)", border: "1px solid var(--rule)" }}
+            />
+          )}
           <h1 className="h1 case-hero__title">{p.title}</h1>
           <p className="lead">{p.oneLiner}</p>
           <dl className="factsheet" style={{ "--cols": p.spec.length } as React.CSSProperties}>
@@ -156,8 +179,8 @@ export default async function CasePage({ params }: { params: Promise<Params> }) 
               </div>
             </>
           ) : (
-            <div className="phones">
-              {[...(p.cover ? [p.cover] : []), ...p.screens].slice(0, 4).map((s, n) => (
+            <div className={`phones${p.phoneColumns === 5 ? " phones--5" : ""}`}>
+              {[...(p.cover ? [p.cover] : []), ...p.screens].slice(0, p.phoneColumns ?? 4).map((s, n) => (
                 <Figure key={s.src} img={s} priority={n === 0} sizes="(min-width: 48rem) 22vw, 45vw" />
               ))}
             </div>

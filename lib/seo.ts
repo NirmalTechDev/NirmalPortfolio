@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://nirmalranpariya.in";
 export const PERSON_ID = `${SITE_URL}/#person`;
 export const WEBSITE_ID = `${SITE_URL}/#website`;
-export const PROFILE_IMAGE = "/Nirmal-Ranpariya-React-Native-Developer.jpg";
+/** Bump when page content changes; used for sitemap lastModified instead of the build time. */
+export const CONTENT_UPDATED = "2026-10-03";
+export const PROFILE_IMAGE = "/nirmal-ranpariya-portrait.jpg";
 
 export const professionalProfiles = {
   github: "https://github.com/NirmalTechDev",
@@ -18,7 +20,7 @@ export const nirmalIdentity = {
   phone: "+919664648614",
   location: "Surat, India",
   description:
-    "Nirmal Ranpariya is a React Native Developer and Software Engineer specializing in mobile applications, React Native, TypeScript, Node.js, Firebase, APIs, and modern product development.",
+    "Nirmal Ranpariya is a React Native developer and software engineer in Surat, India, building mobile apps, APIs and release pipelines.",
   skills: [
     "React Native",
     "TypeScript",
@@ -63,6 +65,7 @@ export function pageMetadata({
       type: "website",
       url,
       siteName: "Nirmal Ranpariya",
+      locale: "en_IN",
       title,
       description,
       ...(imageUrl ? { images: [{ url: imageUrl, alt: title }] } : {}),
@@ -201,4 +204,32 @@ export function pageJsonLd({
     });
   }
   return { "@context": "https://schema.org", "@graph": graph };
+}
+
+/** Structured data for a case study: the work itself, linked to the person and the breadcrumb. */
+export function projectJsonLd(p: {
+  slug: string;
+  title: string;
+  oneLiner: string;
+  kind: string;
+  cover?: { src: string };
+  links: { label: string; href: string }[];
+  independent: boolean;
+  mobile: boolean;
+}) {
+  const url = absoluteUrl(`/work/${p.slug}`);
+  return {
+    "@type": p.mobile ? "MobileApplication" : "WebApplication",
+    "@id": `${url}#work`,
+    name: p.title,
+    description: p.oneLiner,
+    url,
+    applicationCategory: p.mobile ? "LifestyleApplication" : "FinanceApplication",
+    operatingSystem: p.mobile ? "Android, iOS" : "Web",
+    ...(p.cover ? { image: absoluteUrl(p.cover.src) } : {}),
+    ...(p.links.length ? { sameAs: p.links.map((l) => l.href) } : {}),
+    // Credit as author only where the product is my own; elsewhere I contributed.
+    ...(p.independent ? { author: { "@id": PERSON_ID } } : { contributor: { "@id": PERSON_ID } }),
+    mainEntityOfPage: `${url}#webpage`,
+  };
 }

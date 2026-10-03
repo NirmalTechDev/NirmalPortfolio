@@ -7,7 +7,7 @@ import { education, journey, languages, links, RESUME_HREF } from "@/content/pro
 import { pageMetadata, profilePageJsonLd, PROFILE_IMAGE } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "About Nirmal Ranpariya | React Native Developer & Software Engineer",
+  title: "About Nirmal Ranpariya | React Native Developer",
   description:
     "About Nirmal Ranpariya, a React Native developer from Gujarat, India: how he works, what he studied, what he builds and what he is exploring now.",
   path: "/about",
@@ -29,7 +29,7 @@ export default function AboutPage() {
           <div style={{ gridColumn: "1 / -1" }} className="about-body">
             <div className="grid" style={{ rowGap: "var(--s-6)" }}>
               <div className="about-portrait ab-p rv-img">
-                <Image src={PROFILE_IMAGE} alt="Portrait of Nirmal Ranpariya" width={640} height={640} sizes="26rem" />
+                <Image src={PROFILE_IMAGE} alt="Portrait of Nirmal Ranpariya" width={1000} height={1000} sizes="26rem" />
               </div>
               <div className="prose ab-t">
                 <p className="lead">
@@ -39,7 +39,7 @@ export default function AboutPage() {
                 <p>
                   Day to day that means the app and the parts around it: API integration, Firebase, push notifications,
                   native modules and getting builds into the stores. I studied IT and computer science, and I keep
-                  building whole things rather than pieces. Collective Ledger OS, which I designed and shipped
+                  building whole things rather than pieces. Collective Ledger, which I designed and shipped
                   end to end, is the clearest example.
                 </p>
                 <p>
@@ -76,7 +76,7 @@ export default function AboutPage() {
           <div className="pair__r prose">
             <p>
               AI-assisted development and AI-integrated app features, and taking whole products from data model to
-              deployment, as with Collective Ledger OS.
+              deployment, as with Collective Ledger.
             </p>
           </div>
         </div>

@@ -5,10 +5,10 @@ import { projects } from "@/content/projects";
 import { pageJsonLd, pageMetadata } from "@/lib/seo";
 
 const description =
-  "Case studies by Nirmal Ranpariya: React Native apps OpiGo, by.U and SELA, and Collective Ledger OS, a community finance platform built with Next.js.";
+  "Case studies by Nirmal Ranpariya: React Native apps OpiGo, by.U and SELA, and Collective Ledger, a full-stack savings platform.";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Work | Nirmal Ranpariya",
+  title: "React Native & Web Projects | Nirmal Ranpariya",
   description,
   path: "/work",
 });
@@ -17,7 +17,7 @@ export default function WorkPage() {
   return (
     <>
       <JsonLd
-        data={pageJsonLd({ path: "/work", name: "Work | Nirmal Ranpariya", description, crumbs: [{ name: "Work", path: "/work" }] })}
+        data={pageJsonLd({ path: "/work", name: "React Native & Web Projects | Nirmal Ranpariya", description, crumbs: [{ name: "Work", path: "/work" }] })}
       />
       <PageHead n="01" label="Selected work" title={<>Work, <em>in detail.</em></>}>
         <p className="lead">

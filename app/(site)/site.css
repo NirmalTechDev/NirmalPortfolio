@@ -536,9 +536,7 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 22%;
-  mix-blend-mode: multiply;
-  filter: grayscale(0.35) contrast(1.02);
+  object-position: 50% 24%;
 }
 @keyframes unveil {
   from {
@@ -802,6 +800,11 @@ main {
   }
   .phones .fig:nth-child(even) {
     margin-top: var(--s-7);
+  }
+}
+@media (min-width: 48rem) {
+  .phones--5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 .wide-figs {
@@ -1222,9 +1225,7 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 20%;
-  mix-blend-mode: multiply;
-  filter: grayscale(0.35);
+  object-position: 50% 24%;
 }
 .ab-p,
 .ab-t {

@@ -6,10 +6,10 @@ import { email, links } from "@/content/profile";
 import { pageJsonLd, pageMetadata } from "@/lib/seo";
 
 const description =
-  "Contact Nirmal Ranpariya about React Native, mobile app development, Node.js, Firebase and product engineering work.";
+  "Hire Nirmal Ranpariya for React Native, mobile app development, Node.js, Firebase and product engineering work.";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Contact Nirmal Ranpariya",
+  title: "Hire Nirmal Ranpariya | React Native Developer",
   description,
   path: "/contact",
 });
@@ -19,7 +19,7 @@ export default function ContactPage() {
     <>
       <JsonLd
         data={{
-          ...pageJsonLd({ path: "/contact", name: "Contact Nirmal Ranpariya", description, crumbs: [{ name: "Contact", path: "/contact" }] }),
+          ...pageJsonLd({ path: "/contact", name: "Hire Nirmal Ranpariya | React Native Developer", description, crumbs: [{ name: "Contact", path: "/contact" }] }),
         }}
       />
       <PageHead n="04" label="Contact" title={<>Have a product problem? <em>Let&apos;s talk about the system.</em></>}>

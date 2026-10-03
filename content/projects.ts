@@ -28,8 +28,12 @@ export interface Project {
   spec: [label: string, value: string][];
   links: { label: string; href: string }[];
   cover?: Img;
+  /** Small app icon shown beside the title (mobile apps). */
+  icon?: Img;
   screens: Img[];
   screenLayout: "phones" | "wide";
+  /** How many phone screens the gallery shows in one row. Defaults to 4. */
+  phoneColumns?: 4 | 5;
   context: string[];
   problem?: string[];
   role: { intro: string; items: string[] };
@@ -58,11 +62,18 @@ const byu = (n: number): Img => ({
 });
 
 const ledger = (n: number, alt: string, caption?: string): Img => ({
-  src: `/work/collective/ledger-${n}.jpg`,
+  src: `/work/collective/ledger-v2-${n}.jpg`,
   alt,
   width: 1266,
-  height: 860,
+  height: 950,
   caption,
+});
+
+const sela = (n: number, alt: string): Img => ({
+  src: `/work/sela/sela-${n}.jpg`,
+  alt,
+  width: 660,
+  height: 1170,
 });
 
 export const projects: Project[] = [
@@ -219,91 +230,99 @@ export const projects: Project[] = [
   {
     slug: "collective-ledger",
     number: "03",
-    title: "Collective Ledger OS",
+    title: "Collective Ledger",
     kind: "Community finance · Web",
     status: "Live on Vercel",
     oneLiner:
-      "A finance platform for communities and cooperatives: contributions, penalties, governance and an audit trail.",
+      "A shared ledger for community savings: monthly installments, late fees, investments and admin votes, open to every member.",
     spec: [
       ["Type", "Independent product"],
       ["Year", "2026"],
       ["Platform", "Web, responsive"],
+      ["Stack", "Next.js · Express · MongoDB"],
       ["My role", "Design and full-stack development"],
     ],
     links: [{ label: "collective-sandy.vercel.app", href: "https://collective-sandy.vercel.app/" }],
-    cover: ledger(1, "Collective Ledger OS landing page"),
+    cover: ledger(1, "Collective Ledger landing page: “A ledger every member can read.”"),
     screens: [
-      ledger(2, "Collective Ledger OS features overview"),
-      ledger(3, "Collective Ledger OS how-it-works section"),
-      ledger(4, "Collective Ledger OS dashboard and analytics view"),
-      ledger(5, "Collective Ledger OS member and records screen"),
+      ledger(2, "Collective Ledger member dashboard with total paid, pending, penalties and the monthly installment"),
+      ledger(3, "Collective Ledger admin console with collected, pending and available-to-invest figures"),
+      ledger(4, "Collective Ledger admin election screen with live vote counts"),
+      ledger(5, "Collective Ledger investments screen listing each position with its risk level"),
+      ledger(6, "Collective Ledger transactions screen listing recorded payments"),
+      ledger(7, "Collective Ledger member dashboard in the light theme"),
     ],
     screenLayout: "wide",
     context: [
-      "Collective Ledger OS is a full-stack platform for communities, cooperatives and shared groups to manage collections, contributions, investments and penalties with complete transparency.",
-      "It also covers governance: transparent voting, role-based members and an audit log for critical actions.",
+      "Collective Ledger runs the money of small savings communities. Members pay a monthly installment, the server works out any late fee, and the admin records what is invested, so every figure is something any member can check.",
+      "Beyond payments it covers governance: join requests the admin approves or declines, an admin the members elect once the community grows past five, and an audit log of admin actions. The screens shown here use sample data.",
     ],
     problem: [
-      "Community finance often lives in spreadsheets, manual tracking and scattered messages. That produces rounding errors, weak audit history and low trust between members.",
+      "Community savings usually live in a spreadsheet and a group chat. Totals drift, late fees are argued about, and nobody can see what the admin did with the money.",
     ],
     role: {
       intro: "This is my own product. I designed and built it end to end:",
       items: [
-        "Built the full-stack platform with Next.js and Prisma.",
-        "Implemented authentication with NextAuth.",
-        "Built the decimal-safe financial engine, including per-day late-fee logic.",
-        "Designed the governance layer: voting, audit logs and role-based member management.",
-        "Deployed it on Vercel.",
+        "Designed the interface and the brand, including the logo, a dark and light theme, and a layout that works at phone width.",
+        "Built the Next.js (App Router) frontend with Zustand stores and a typed API client.",
+        "Built the Express and MongoDB API: members, communities, installments, payments, investments, votes and audit logs.",
+        "Implemented JWT sign-in with email one-time-code verification, and role checks on every admin action.",
+        "Wrote the money rules on the server: whole-paise arithmetic and the per-day late fee.",
+        "Set up search metadata, structured data, a sitemap and deployment on Vercel.",
       ],
     },
     system: {
       title: "How money moves through the product",
-      caption: "The product workflow as designed: from setting up a community to an auditable record.",
+      caption: "The workflow as built: from setting up a community to a record any member can read.",
       lanes: [
-        { label: "Setup", steps: ["Register community", "Set financial rules", "Onboard members"] },
-        { label: "Money", steps: ["Contributions and dues", "Late-fee rule", "Ledger"] },
-        { label: "Trust", steps: ["Role-based access", "Voting", "Audit log"] },
+        { label: "Setup", steps: ["Register community", "Set first-month amount and growth range", "Invite or approve members"] },
+        { label: "Money", steps: ["Monthly installment", "Late fee after the 10th", "Admin confirms payment", "Ledger and totals"] },
+        { label: "Trust", steps: ["Role checks", "Admin vote above five members", "Audit log", "CSV export"] },
       ],
     },
     engineering: [
       {
-        title: "Decimal-safe money",
-        body: "Amounts are calculated with decimal arithmetic (Decimal.js and Prisma decimals) instead of floating point, so totals do not drift by fractions.",
+        title: "Money in whole paise",
+        body: "Every amount is stored and calculated as an integer number of paise, never as a floating-point rupee value, so totals cannot drift by a fraction and the member and the admin always see the same figure.",
       },
       {
-        title: "Penalties as a rule, not a spreadsheet formula",
-        body: "Late fees are computed per day by the system, so the same rule applies to every member.",
+        title: "Late fees as a server rule",
+        body: "Installments are due by the 10th, and after that the server adds ₹20 for every day late. The rule lives in one place, so it applies to every member the same way.",
       },
       {
-        title: "An audit trail for every critical action",
-        body: "Governance actions and financial changes are logged, and roles decide who may perform them.",
+        title: "Approval and election flows",
+        body: "Join requests wait up to three minutes for the admin, then the member confirms their email with a one-time code. Once a community has more than five members, the admin role goes to whoever wins the vote.",
+      },
+      {
+        title: "Everything scoped to a community",
+        body: "Each request carries the community it belongs to, and the API scopes reads and writes to it. An audit log records admin actions, and payments, investments and the log export as CSV.",
       },
     ],
     experience: [
-      "Financial data is dense. The dashboards are responsive so members can read dues and contributions on a phone as well as a desktop, and the interface avoids feature overload for non-technical users.",
+      "The design is deliberately quiet: a serif display face, one accent colour and tabular figures, so numbers line up and the page reads like a ledger. Dues and contributions stay readable on a phone as well as a desktop.",
     ],
     challenges: [
       {
-        title: "Rounding discrepancies",
-        body: "Handled by treating money as decimals throughout the stack.",
+        title: "Keeping the member's number and the admin's number identical",
+        body: "Both screens read the same server-calculated amounts, including late fees, so there is no second formula to disagree with.",
       },
       {
         title: "Transparency without overwhelming people",
-        body: "Non-technical members need to verify numbers without learning accounting. The product keeps the workflow linear: setup, tracking, governance.",
+        body: "Non-technical members need to verify the numbers without learning accounting. The workflow stays linear: set up, pay, confirm, review.",
       },
     ],
     outcome: [
-      "A deployed, working product with dashboards, exports, voting and audit logs.",
+      "A deployed, working product with dashboards, an admin console, voting, investments, audit logs and CSV export.",
       "It has no published user numbers, and none are claimed here.",
     ],
     stack: [
-      { group: "Application", items: ["Next.js (App Router)", "React", "Zustand"] },
-      { group: "Data", items: ["Prisma ORM", "Decimal.js"] },
-      { group: "Auth", items: ["NextAuth"] },
+      { group: "Frontend", items: ["Next.js (App Router)", "React", "TypeScript", "Tailwind CSS", "Zustand", "Framer Motion", "Recharts"] },
+      { group: "Backend", items: ["Node.js", "Express", "MongoDB", "Mongoose"] },
+      { group: "Auth", items: ["JWT", "Email one-time code"] },
       { group: "Delivery", items: ["Vercel"] },
     ],
     reflection: [
-      "Decimal precision is not optional in finance software; it has to be designed in from the first model.",
+      "Money has to be designed in from the first model. Choosing integer paise on day one removed a whole class of bugs.",
       "Governance features earn trust when they are easy to verify, not when they are elaborate.",
     ],
   },
@@ -314,44 +333,75 @@ export const projects: Project[] = [
     kind: "Classifieds marketplace · Mobile",
     status: "Developed · not yet published",
     oneLiner:
-      "A mobile-first classifieds app for buying, selling and trading locally, with real-time chat.",
+      "A mobile-first classifieds app for buying, selling and trading locally, with a live map, real-time chat and seller ratings.",
     spec: [
-      ["Type", "Mobile app"],
+      ["Type", "Client product"],
+      ["Company", "Ofniinfo Software Solutions"],
       ["Platform", "React Native"],
       ["Status", "Developed, not published to the stores"],
+      ["My role", "Sole React Native developer"],
     ],
     links: [],
-    screens: [],
+    cover: sela(1, "SELA home screen: a grid of nearby listings with a search bar and a distance filter"),
+    icon: {
+      src: "/work/sela/sela-icon.jpg",
+      alt: "SELA app icon",
+      width: 512,
+      height: 512,
+    },
+    screens: [
+      sela(2, "SELA post-item screen with photo selection, title and description, in a three-step flow"),
+      sela(3, "SELA My Items screen with promote, mark sold, archive and sell-similar actions"),
+      sela(4, "SELA item detail screen showing photos, price, condition, seller and approximate location"),
+      sela(5, "SELA account screen with ratings, policy and safety tips, and settings"),
+    ],
     screenLayout: "phones",
+    phoneColumns: 5,
     context: [
-      "SELA is a mobile-first classifieds marketplace in the spirit of OLX. People buy, sell and trade products locally.",
+      "SELA is a mobile-first classifieds marketplace in the spirit of OLX. People buy, sell and trade products near them: they browse listings around their location, chat with the seller, and manage what they have posted.",
+      "The screens shown are from a test build with test data.",
+    ],
+    problem: [
+      "Local buying and selling needs three things to work together: finding what is nearby, trusting the person on the other end, and keeping your own listings under control.",
     ],
     role: {
-      intro: "I developed the core marketplace features in React Native:",
+      intro: "I developed the core marketplace in React Native, as the only React Native developer on it:",
       items: [
-        "Listings with image uploads, pricing, descriptions and categories.",
+        "Listings with image upload, pricing, descriptions and categories, in a three-step post, details and finish flow.",
+        "Location-based discovery: a grid of listings around the user, with a search bar and a selectable distance.",
         "Real-time in-app chat between buyers and sellers.",
-        "Location-based discovery that surfaces nearby listings using GPS.",
+        "Item management: promote a listing, mark it sold, archive it, or sell a similar item.",
+        "Listing pages with price, condition, delivery option, seller profile and reviews, and an approximate location to protect the seller's privacy.",
+        "Account screens: buys and sold counts, ratings, followed and blocked users, notifications, language, theme, and policy and safety tips.",
       ],
     },
     system: {
       title: "Listing to conversation",
-      caption: "The two core flows in the app.",
+      caption: "The three core flows in the app.",
       lanes: [
-        { label: "Selling", steps: ["Photos", "Price and description", "Category", "Publish"] },
-        { label: "Buying", steps: ["GPS location", "Nearby listings", "Chat with seller"] },
+        { label: "Selling", steps: ["Photos", "Title and description", "Details", "Publish", "Promote or mark sold"] },
+        { label: "Buying", steps: ["Nearby listings", "Listing details", "Chat with seller", "Save or share"] },
+        { label: "Trust", steps: ["Seller profile and reviews", "Report or block", "Safety tips"] },
       ],
     },
     engineering: [
       {
         title: "Performance on image-heavy lists",
-        body: "Lazy loading, image caching and efficient data querying keep listing feeds responsive.",
+        body: "Lazy loading, image caching and efficient data querying keep the listing grid responsive even when every card is a photo.",
+      },
+      {
+        title: "Location without exposing the seller",
+        body: "Discovery uses GPS to find nearby listings, while the listing page shows only an approximate location.",
+      },
+      {
+        title: "A short path to posting",
+        body: "Posting is split into three short steps, with photos first, so a seller can list something quickly from the phone that took the photo.",
       },
     ],
     outcome: ["The app is developed but has not been published to the stores, so there is nothing public to link to."],
     stack: [
       { group: "Mobile", items: ["React Native"] },
-      { group: "Capabilities", items: ["GPS", "Real-time chat", "Image upload"] },
+      { group: "Capabilities", items: ["GPS", "Real-time chat", "Image upload", "Image caching"] },
     ],
   },
 ];

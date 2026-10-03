@@ -46,8 +46,8 @@ export default function HomePage() {
               <Image
                 src={PROFILE_IMAGE}
                 alt="Portrait of Nirmal Ranpariya"
-                width={640}
-                height={640}
+                width={1000}
+                height={1000}
                 sizes="(min-width: 60rem) 33vw, 22rem"
                 priority
               />

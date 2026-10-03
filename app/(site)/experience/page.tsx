@@ -9,7 +9,7 @@ const description =
   "Professional experience of Nirmal Ranpariya: React Native developer at Ofniinfo Software Solutions, Surat, since June 2024.";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Experience | Nirmal Ranpariya",
+  title: "React Native Developer Experience | Nirmal Ranpariya",
   description,
   path: "/experience",
 });
@@ -20,7 +20,7 @@ export default function ExperiencePage() {
       <JsonLd
         data={pageJsonLd({
           path: "/experience",
-          name: "Experience | Nirmal Ranpariya",
+          name: "React Native Developer Experience | Nirmal Ranpariya",
           description,
           crumbs: [{ name: "Experience", path: "/experience" }],
         })}
