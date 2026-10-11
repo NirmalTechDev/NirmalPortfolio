@@ -1,6 +1,6 @@
 import { professionalProfiles, nirmalIdentity } from "@/lib/seo";
 
-export const RESUME_HREF = "/Nirmal_Ranpariya_Resume.pdf";
+export const RESUME_HREF = "/Nirmal-ranpariya-resume.pdf";
 
 export const nav = [
   { n: "01", label: "Work", href: "/work" },
