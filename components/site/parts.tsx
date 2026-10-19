@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
-import { capabilities, principles } from "@/content/profile";
-import type { FlowLane, Img, Project } from "@/content/projects";
+import type { Capability, FlowLane, Img, Project } from "@/lib/content/types";
 
 export function Clause({ n, label }: { n: string; label: string }) {
   return (
@@ -88,11 +87,11 @@ export function ProjectFeature({ p }: { p: Project }) {
           <dl className="feature__facts rv">
             <div className="fact">
               <dt>What it is</dt>
-              <dd>{p.context[0]}</dd>
+              <dd>{p.context[0] ?? p.oneLiner}</dd>
             </div>
             <div className="fact">
               <dt>My role</dt>
-              <dd>{p.spec.find(([k]) => k === "My role")?.[1]}</dd>
+              <dd>{p.spec.find((s) => s.label === "My role")?.value ?? p.kind}</dd>
             </div>
             {p.engineering && (
               <div className="fact">
@@ -142,7 +141,7 @@ export function Flow({ lanes, label }: { lanes: FlowLane[]; label: string }) {
   );
 }
 
-export function Principles() {
+export function Principles({ principles }: { principles: { title: string; body: string }[] }) {
   return (
     <ol className="principles">
       {principles.map((p, i) => (
@@ -156,7 +155,7 @@ export function Principles() {
   );
 }
 
-export function CapabilityMap() {
+export function CapabilityMap({ capabilities }: { capabilities: Capability[] }) {
   return (
     <dl className="capmap">
       {capabilities.map((c) => (

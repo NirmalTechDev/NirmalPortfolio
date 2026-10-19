@@ -1,30 +1,21 @@
-import { env } from "../lib/env";
+import { signStaffToken, verifyStaffToken } from "../lib/jwt";
 
+/** Dashboard session token checks (run: npx tsc -p . && node on the output, or via any TS runner). */
 function runSecurityTests() {
-  console.log("▶ Running Security & Auth Guard Unit Tests...");
+  const secret = "s".repeat(48);
+  const token = signStaffToken({ sub: "owner", email: "", name: "Nirmal" }, secret, 60);
 
-  // Test 1: Zod Env Validation
-  if (!env.AUTH_SECRET) {
-    throw new Error("Security Test 1 Failed: env.AUTH_SECRET is empty");
-  }
-  console.log("  ✓ Security Test 1 Passed: Zod env validation");
+  if (!verifyStaffToken(token, secret)) throw new Error("valid token rejected");
+  if (verifyStaffToken(token, "x".repeat(48))) throw new Error("token accepted with wrong secret");
 
-  // Test 2: Unauthenticated state
-  const mockToken = null;
-  const isAuth = !!mockToken;
-  if (isAuth) {
-    throw new Error("Security Test 2 Failed: Unauthenticated state check failed");
-  }
-  console.log("  ✓ Security Test 2 Passed: Unauthenticated state check");
+  const [h, , s] = token.split(".");
+  const forgedBody = Buffer.from(JSON.stringify({ sub: "owner", email: "", name: "x", exp: 9999999999 })).toString("base64url");
+  if (verifyStaffToken(`${h}.${forgedBody}.${s}`, secret)) throw new Error("tampered token accepted");
 
-  // Test 3: Cookie Token format verification
-  const validToken = `jwt_sec_${Date.now()}_abc123`;
-  if (!validToken.startsWith("jwt_sec_")) {
-    throw new Error("Security Test 3 Failed: Token prefix mismatch");
-  }
-  console.log("  ✓ Security Test 3 Passed: Security token formatting");
+  const expired = signStaffToken({ sub: "owner", email: "", name: "Nirmal" }, secret, -10);
+  if (verifyStaffToken(expired, secret)) throw new Error("expired token accepted");
 
-  console.log("🔒 All 3 Security Tests Passed Successfully!");
+  console.log("✓ dashboard session token: valid / wrong secret / tampered / expired");
 }
 
 runSecurityTests();

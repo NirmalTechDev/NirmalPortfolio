@@ -1,85 +1,193 @@
 "use client";
 
-import React, { useState } from "react";
-import { AuthGuard } from "@/features/auth/auth-guard";
-import { CommandHeader } from "@/features/dashboard-header/command-header";
-import { OverviewView } from "@/features/overview/overview-view";
-import { CMSView } from "@/features/portfolio-cms/cms-view";
-import { ContactsView } from "@/features/contact-mgmt/contacts-view";
-import { LedgerView } from "@/features/collective-ledger/ledger-view";
-import { MonitoringView } from "@/features/api-monitoring/monitoring-view";
-import { DevProfileView } from "@/features/dev-profile/dev-profile-view";
-import { AIWorkspaceView } from "@/features/ai-workspace/ai-workspace-view";
-import { DashboardTab } from "@/types/dashboard";
-import {
-  LayoutDashboard,
-  Layers,
-  Mail,
-  Activity,
-  Cpu,
-  GitBranch,
-  Sparkles,
-} from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, FileText, FolderKanban, Images, Inbox, UserRound, Cake } from "lucide-react";
+import { useOverview } from "@/features/admin/shell";
+import { ErrorBlock, LoadingBlock, Note, PageHeader, Section, timeAgo } from "@/features/admin/ui";
 
-const NAV_TABS: { value: DashboardTab; label: string; icon: React.ElementType; activeColor: string }[] = [
-  { value: "overview",    label: "Overview",          icon: LayoutDashboard, activeColor: "text-sky-400 border-sky-500/40 bg-sky-500/10" },
-  { value: "portfolio",   label: "Portfolio CMS",     icon: Layers,          activeColor: "text-purple-400 border-purple-500/40 bg-purple-500/10" },
-  { value: "contacts",    label: "Contact Inbox",     icon: Mail,            activeColor: "text-pink-400 border-pink-500/40 bg-pink-500/10" },
-  { value: "ledger",      label: "Collective Ledger", icon: Activity,        activeColor: "text-emerald-400 border-emerald-500/40 bg-emerald-500/10" },
-  { value: "monitoring",  label: "API Monitoring",    icon: Cpu,             activeColor: "text-amber-400 border-amber-500/40 bg-amber-500/10" },
-  { value: "github",      label: "GitHub Profile",    icon: GitBranch,       activeColor: "text-blue-400 border-blue-500/40 bg-blue-500/10" },
-  { value: "ai",          label: "AI Workspace",      icon: Sparkles,        activeColor: "text-indigo-400 border-indigo-500/40 bg-indigo-500/10" },
-];
+const ACTIONS: Record<string, string> = {
+  SITE_CONTENT_UPDATED: "Updated profile & page text",
+  PROJECT_CREATED: "Added a project",
+  PORTFOLIO_UPDATED: "Edited portfolio content",
+  PROJECT_DELETED: "Deleted a project",
+  PROJECTS_REORDERED: "Reordered projects",
+  RESUME_UPLOADED: "Uploaded a résumé",
+  RESUME_UPDATED: "Changed the active résumé",
+  RESUME_DELETED: "Deleted a résumé",
+  CONTACT_REPLIED: "Replied to a message",
+  CONTACT_REPLY_FAILED: "A reply failed to send",
+  CONTACT_STATUS_UPDATED: "Updated a message",
+  CONTACT_DELETED: "Deleted a message",
+  GALLERY_PHOTO_ADDED: "Added a gallery photo",
+  GALLERY_PHOTOS_ADDED: "Added gallery photos",
+  GALLERY_PHOTO_UPDATED: "Edited a gallery photo",
+  GALLERY_PHOTO_REPLACED: "Replaced a gallery photo",
+  GALLERY_PHOTOS_UPDATED: "Edited several gallery photos",
+  GALLERY_REORDERED: "Reordered the gallery",
+  GALLERY_PHOTO_TRASHED: "Moved a photo to trash",
+  GALLERY_PHOTO_RESTORED: "Restored a photo",
+  GALLERY_PHOTO_DELETED: "Deleted a photo permanently",
+  BIRTHDAY_CREATED: "Created a birthday page",
+  BIRTHDAY_UPDATED: "Edited a birthday page",
+  BIRTHDAY_DUPLICATED: "Duplicated a birthday page",
+  BIRTHDAY_DEFAULT_SET: "Changed the main birthday page",
+  BIRTHDAY_DELETED: "Deleted a birthday page",
+};
 
-export default function CommandCenterPage() {
-  const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
+const greeting = () => {
+  const h = new Date().getHours();
+  return h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+};
+
+export default function OverviewPage() {
+  const { data, isLoading, error, refetch } = useOverview();
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen flex flex-col bg-slate-950 pb-16">
-        <CommandHeader activeTab={activeTab} onTabChange={setActiveTab} />
+    <div className="adm-page">
+      <PageHeader
+        title={`${greeting()}, Nirmal`}
+        description="Everything on your website, inbox, gallery and birthday pages is managed from here. Changes go live as soon as you save."
+        actions={
+          <a className="adm-btn" href="/" target="_blank" rel="noopener noreferrer">
+            Open website <ArrowUpRight />
+          </a>
+        }
+      />
 
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 pt-5 space-y-6">
-          {/* Navigation Tab Bar */}
-          <nav className="w-full overflow-x-auto scrollbar-none -mx-1 px-1">
-            <div className="flex items-center gap-1.5 min-w-max p-1.5 bg-slate-900/80 border border-white/10 rounded-2xl backdrop-blur-xl">
-              {NAV_TABS.map(({ value, label, icon: Icon, activeColor }) => {
-                const isActive = activeTab === value;
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setActiveTab(value)}
-                    className={`
-                      inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold
-                      whitespace-nowrap transition-all duration-200 select-none
-                      ${isActive
-                        ? `${activeColor} border shadow-sm`
-                        : "text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent"
-                      }
-                    `}
-                    aria-current={isActive ? "page" : undefined}
-                  >
-                    <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? "" : "opacity-70"}`} />
-                    <span>{label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </nav>
+      {isLoading && <LoadingBlock rows={5} />}
+      {error && <ErrorBlock error={error} onRetry={() => refetch()} />}
 
-          {/* Module Content Views — animated fade-in on tab change */}
-          <div key={activeTab} className="animate-in fade-in-0 duration-200">
-            {activeTab === "overview"   && <OverviewView />}
-            {activeTab === "portfolio"  && <CMSView />}
-            {activeTab === "contacts"   && <ContactsView />}
-            {activeTab === "ledger"     && <LedgerView />}
-            {activeTab === "monitoring" && <MonitoringView />}
-            {activeTab === "github"     && <DevProfileView />}
-            {activeTab === "ai"         && <AIWorkspaceView />}
+      {data && (
+        <div className="adm-stack" style={{ gap: "1.25rem" }}>
+          {!data.siteContentReady && (
+            <Note tone="warn">
+              <b>Your website is still showing its original built-in content.</b> Run the one-time content migration (see the deployment notes) and every
+              section will become editable here. Until then, saving the Profile page creates the content from scratch.
+            </Note>
+          )}
+          {data.services.media.driver === "none" && (
+            <Note tone="bad">
+              <b>Uploads are switched off.</b> The server has no Cloudinary credentials, so photos, the résumé and music can&apos;t be uploaded yet.
+            </Note>
+          )}
+          {data.services.media.driver === "local" && <Note>Uploads are stored on this computer (local development mode), not on Cloudinary.</Note>}
+          {!data.services.emailConfigured && (
+            <Note tone="warn">
+              <b>Email replies are off.</b> Add the Gmail app password on the server so you can reply to messages from the inbox.
+            </Note>
+          )}
+
+          <div className="adm-grid adm-grid--2">
+            <Section
+              title="Inbox"
+              description={
+                data.counts.newMessages
+                  ? `${data.counts.newMessages} new message${data.counts.newMessages === 1 ? "" : "s"} waiting`
+                  : "You're all caught up."
+              }
+              actions={
+                <Link className="adm-btn adm-btn--sm" href="/me/inbox">
+                  Open inbox
+                </Link>
+              }
+            >
+              {data.recentMessages.length === 0 ? (
+                <p className="adm-muted">When someone writes through the contact form, it appears here.</p>
+              ) : (
+                <div className="adm-rows">
+                  {data.recentMessages.map((m) => (
+                    <Link key={m._id} href={`/me/inbox?id=${m._id}`} className="adm-rowitem">
+                      <div className="adm-rowitem__main">
+                        <p className="adm-rowitem__title">
+                          {m.status === "NEW" && <span className="adm-badge adm-badge--accent" style={{ marginRight: 8 }}>New</span>}
+                          {m.name}
+                        </p>
+                        <p className="adm-rowitem__sub">{m.subject}</p>
+                      </div>
+                      <span className="adm-small adm-muted">{timeAgo(m.createdAt)}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </Section>
+
+            <Section title="Your website" description="What visitors see right now.">
+              <div className="adm-rows">
+                <Link className="adm-rowitem" href="/me/projects">
+                  <FolderKanban aria-hidden="true" />
+                  <div className="adm-rowitem__main">
+                    <p className="adm-rowitem__title">Projects</p>
+                    <p className="adm-rowitem__sub">
+                      {data.counts.projects - data.counts.hiddenProjects} shown{data.counts.hiddenProjects ? `, ${data.counts.hiddenProjects} hidden` : ""}
+                    </p>
+                  </div>
+                </Link>
+                <Link className="adm-rowitem" href="/me/resume">
+                  <FileText aria-hidden="true" />
+                  <div className="adm-rowitem__main">
+                    <p className="adm-rowitem__title">Résumé</p>
+                    <p className="adm-rowitem__sub">{data.resume ? `${data.resume.title} · updated ${timeAgo(data.resume.updatedAt)}` : "Using the built-in PDF"}</p>
+                  </div>
+                </Link>
+                <Link className="adm-rowitem" href="/me/profile">
+                  <UserRound aria-hidden="true" />
+                  <div className="adm-rowitem__main">
+                    <p className="adm-rowitem__title">Profile & page text</p>
+                    <p className="adm-rowitem__sub">{data.siteUpdatedAt ? `Last edited ${timeAgo(data.siteUpdatedAt)}` : "Not edited yet"}</p>
+                  </div>
+                </Link>
+              </div>
+            </Section>
+
+            <Section title="Personal pages">
+              <div className="adm-rows">
+                <Link className="adm-rowitem" href="/me/gallery">
+                  <Images aria-hidden="true" />
+                  <div className="adm-rowitem__main">
+                    <p className="adm-rowitem__title">Gallery</p>
+                    <p className="adm-rowitem__sub">
+                      {data.counts.photos} photo{data.counts.photos === 1 ? "" : "s"}
+                    </p>
+                  </div>
+                </Link>
+                <Link className="adm-rowitem" href="/me/birthdays">
+                  <Cake aria-hidden="true" />
+                  <div className="adm-rowitem__main">
+                    <p className="adm-rowitem__title">Birthday pages</p>
+                    <p className="adm-rowitem__sub">
+                      {data.counts.birthdays} page{data.counts.birthdays === 1 ? "" : "s"}, {data.counts.publishedBirthdays} published
+                    </p>
+                  </div>
+                </Link>
+                <Link className="adm-rowitem" href="/me/inbox">
+                  <Inbox aria-hidden="true" />
+                  <div className="adm-rowitem__main">
+                    <p className="adm-rowitem__title">All messages</p>
+                    <p className="adm-rowitem__sub">{data.counts.totalMessages} in total</p>
+                  </div>
+                </Link>
+              </div>
+            </Section>
+
+            <Section title="Recent changes" description="Your last edits, newest first.">
+              {data.activity.length === 0 ? (
+                <p className="adm-muted">Nothing edited yet.</p>
+              ) : (
+                <ul className="adm-stack" style={{ gap: "0.55rem" }}>
+                  {data.activity.map((a) => (
+                    <li key={a._id} className="adm-row" style={{ justifyContent: "space-between", flexWrap: "nowrap" }}>
+                      <span>{ACTIONS[a.action] || a.action.toLowerCase().replace(/_/g, " ")}</span>
+                      <span className="adm-small adm-muted" style={{ whiteSpace: "nowrap" }}>
+                        {timeAgo(a.timestamp)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Section>
           </div>
-        </main>
-      </div>
-    </AuthGuard>
+        </div>
+      )}
+    </div>
   );
 }

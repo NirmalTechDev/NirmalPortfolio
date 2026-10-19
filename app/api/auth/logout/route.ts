@@ -1,18 +1,8 @@
 import { NextResponse } from "next/server";
+import { clearedSessionCookies } from "@/lib/owner-session";
 
 export async function POST() {
-  const response = NextResponse.json({ message: "Logged out successfully." });
-
-  // Clear HTTP-only cookie
-  response.cookies.set({
-    name: "nirmal_cmd_token",
-    value: "",
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 0,
-  });
-
+  const response = NextResponse.json({ ok: true });
+  for (const c of clearedSessionCookies()) response.cookies.set(c);
   return response;
 }

@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "github.com" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
+      // Local development only: files served by the backend's offline media driver.
+      ...(process.env.NODE_ENV !== "production"
+        ? [{ protocol: "http" as const, hostname: "localhost", port: "4000" }, { protocol: "http" as const, hostname: "127.0.0.1", port: "4000" }]
+        : []),
     ],
   },
   async redirects() {
@@ -50,6 +54,7 @@ const nextConfig: NextConfig = {
       { source: "/me/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
       { source: "/api/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
       { source: "/birthdaywish/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      { source: "/LovedOnesGallery/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
       // Case-study images change rarely; let the CDN and browsers keep them.
       { source: "/work/:dir/:file(.+\\.(?:jpg|png|webp))", headers: [{ key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" }] },
     ];
@@ -59,8 +64,16 @@ const nextConfig: NextConfig = {
     if (process.env.NODE_ENV === "production" && birthdayWishUrl.includes("localhost")) {
       birthdayWishUrl = "https://birthday-wish-eight-pink.vercel.app";
     }
+    // Gallery app (LovedOnesGallery, formerly DinkyN). It runs with basePath "/LovedOnesGallery".
+    let galleryUrl = process.env.GALLERY_URL || "https://dinky-n.vercel.app";
+    if (process.env.NODE_ENV === "production" && galleryUrl.includes("localhost")) {
+      galleryUrl = "https://dinky-n.vercel.app";
+    }
+    galleryUrl = galleryUrl.replace(/\/$/, "");
     return {
       beforeFiles: [
+        { source: "/LovedOnesGallery", destination: `${galleryUrl}/LovedOnesGallery` },
+        { source: "/LovedOnesGallery/:path*", destination: `${galleryUrl}/LovedOnesGallery/:path*` },
         {
           source: "/birthdaywish",
           destination: `${birthdayWishUrl}/birthdaywish`,

@@ -37,6 +37,7 @@ export const nirmalIdentity = {
 };
 
 export function absoluteUrl(path = "/") {
+  if (/^https?:\/\//i.test(path)) return path;
   if (path === "/") return `${SITE_URL}/`;
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }

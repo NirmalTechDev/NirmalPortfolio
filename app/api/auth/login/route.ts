@@ -1,68 +1,44 @@
 import { NextResponse } from "next/server";
-import { MOCK_ADMIN_USER } from "@/lib/constants";
-import { env, getAllowedStaffEmails } from "@/lib/env";
-import { signStaffToken } from "@/lib/jwt";
+import { backendFetch, BackendError } from "@/lib/backend";
+import { buildSessionCookies } from "@/lib/owner-session";
+import { getAuthSecret } from "@/lib/env";
+import { visitorHeaders } from "@/lib/forward-ip";
 
-const rateLimitMap = new Map<string, { attempts: number; resetTime: number }>();
-
+/**
+ * Password-only owner login. The password is checked by the backend against a bcrypt
+ * hash (OWNER_PASSWORD_HASH); this app never stores or compares it. Brute-force
+ * protection (per-IP and global lockout) lives in the backend.
+ */
 export async function POST(request: Request) {
+  if (!getAuthSecret()) {
+    return NextResponse.json({ message: "Dashboard sign-in is not configured (AUTH_SECRET missing)." }, { status: 503 });
+  }
+  const origin = request.headers.get("origin");
+  if (origin && new URL(origin).host !== request.headers.get("host")) {
+    return NextResponse.json({ message: "Cross-site sign-in blocked." }, { status: 403 });
+  }
+
+  let password = "";
   try {
-    const ip = request.headers.get("x-forwarded-for") || "127.0.0.1";
-    const now = Date.now();
-    const windowMs = 15 * 60 * 1000;
-    const maxAttempts = 5;
-
-    const rateData = rateLimitMap.get(ip);
-    if (rateData) {
-      if (now > rateData.resetTime) {
-        rateLimitMap.set(ip, { attempts: 1, resetTime: now + windowMs });
-      } else if (rateData.attempts >= maxAttempts) {
-        return NextResponse.json(
-          { message: "Too many login attempts. Please try again in 15 minutes." },
-          { status: 429 }
-        );
-      } else {
-        rateData.attempts += 1;
-      }
-    } else {
-      rateLimitMap.set(ip, { attempts: 1, resetTime: now + windowMs });
-    }
-
-    const body = await request.json();
-    const { email, passcode } = body;
-    const normalizedEmail = String(email || "").trim().toLowerCase();
-    const allowedEmails = getAllowedStaffEmails();
-
-    if (!allowedEmails.includes(normalizedEmail)) {
-      return NextResponse.json({ message: "Invalid staff credentials." }, { status: 401 });
-    }
-
-    if (!passcode || passcode !== env.STAFF_PASSCODE) {
-      return NextResponse.json({ message: "Invalid passcode." }, { status: 401 });
-    }
-
-    const token = signStaffToken(
-      { sub: MOCK_ADMIN_USER.id, email: normalizedEmail, name: MOCK_ADMIN_USER.name },
-      env.AUTH_SECRET
-    );
-
-    const response = NextResponse.json({
-      user: { ...MOCK_ADMIN_USER, email: normalizedEmail },
-      message: "Authentication successful.",
-    });
-
-    response.cookies.set({
-      name: "nirmal_cmd_token",
-      value: token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24,
-    });
-
-    return response;
+    ({ password } = (await request.json()) as { password?: string } as { password: string });
   } catch {
-    return NextResponse.json({ message: "Authentication server error." }, { status: 500 });
+    /* empty body */
+  }
+  if (!password) return NextResponse.json({ message: "Enter your password." }, { status: 400 });
+
+  try {
+    const session = await backendFetch<{ token: string; expiresAt: string }>("/owner/login", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+      headers: visitorHeaders(request),
+      timeoutMs: 45_000,
+    });
+    const response = NextResponse.json({ ok: true, expiresAt: session.expiresAt });
+    for (const c of buildSessionCookies(session.token, session.expiresAt)) response.cookies.set(c);
+    return response;
+  } catch (err) {
+    const e = err as BackendError;
+    const status = e.status === 401 || e.status === 429 || e.status === 503 ? e.status : 502;
+    return NextResponse.json({ message: e.message, code: e.code }, { status });
   }
 }

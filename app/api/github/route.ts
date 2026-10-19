@@ -1,86 +1,64 @@
 import { NextResponse } from "next/server";
+import { env } from "@/lib/env";
 
-export const revalidate = 3600; // Cache responses for 1 hour
+export const revalidate = 3600; // GitHub data refreshes at most hourly
 
+interface Repo {
+  id: number;
+  name: string;
+  description: string | null;
+  html_url: string;
+  stargazers_count: number;
+  forks_count: number;
+  language: string | null;
+  updated_at: string;
+  fork: boolean;
+}
+
+/** Real GitHub profile data only. If GitHub is unreachable this says so instead of inventing numbers. */
 export async function GET() {
-  const username = "NirmalTechDev";
-  const headers: Record<string, string> = {
-    Accept: "application/vnd.github.v3+json",
-    "User-Agent": "NirmalPortfolio-ServerProxy",
-  };
-
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
+  const username = env.GITHUB_USERNAME;
+  const headers: Record<string, string> = { Accept: "application/vnd.github+json", "User-Agent": "NirmalPortfolio" };
+  if (env.GITHUB_TOKEN) headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
 
   try {
     const [userRes, reposRes] = await Promise.all([
       fetch(`https://api.github.com/users/${username}`, { headers, next: { revalidate: 3600 } }),
-      fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=6`, { headers, next: { revalidate: 3600 } }),
+      fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100&type=owner`, { headers, next: { revalidate: 3600 } }),
     ]);
-
-    let userStats = {
-      username: "NirmalTechDev",
-      totalRepos: 18,
-      totalStars: 42,
-      contributionsThisYear: 840,
-      recentCommitsCount: 156,
-      topLanguages: [
-        { name: "TypeScript", percentage: 48, color: "#3178c6" },
-        { name: "JavaScript", percentage: 32, color: "#f7df1e" },
-        { name: "React / React Native", percentage: 14, color: "#61dafb" },
-        { name: "CSS / Tailwind", percentage: 6, color: "#38bdf8" },
-      ],
-    };
-
-    let reposList = [
-      { id: 101, name: "NirmalPortfolio", description: "Production personal portfolio & Command Center built with Next.js 16, Turbopack, Tailwind CSS v4, and Framer Motion.", html_url: "https://github.com/NirmalTechDev/NirmalPortfolio", stargazers_count: 18, forks_count: 4, language: "TypeScript", updated_at: new Date().toISOString() },
-      { id: 102, name: "collective-ledger-api", description: "Node.js + Express backend service for community finance, decimal precision tracking, and automated late fees.", html_url: "https://github.com/NirmalTechDev/collective-ledger-api", stargazers_count: 14, forks_count: 3, language: "JavaScript", updated_at: new Date(Date.now() - 86400000).toISOString() },
-      { id: 103, name: "opigo-mobile-app", description: "React Native social stock trading application with live polls, expert advice, and Firebase Realtime DB pipelines.", html_url: "https://github.com/NirmalTechDev/opigo-mobile-app", stargazers_count: 9, forks_count: 2, language: "TypeScript", updated_at: new Date(Date.now() - 172800000).toISOString() },
-    ];
-
-    if (userRes.ok) {
-      const userData = await userRes.json();
-      userStats.totalRepos = userData.public_repos || userStats.totalRepos;
+    if (!userRes.ok || !reposRes.ok) {
+      return NextResponse.json({ error: `GitHub responded with ${userRes.ok ? reposRes.status : userRes.status}` }, { status: 502 });
     }
+    const user = await userRes.json();
+    const repos = ((await reposRes.json()) as Repo[]).filter((r) => !r.fork);
+    const langCount = new Map<string, number>();
+    repos.forEach((r) => r.language && langCount.set(r.language, (langCount.get(r.language) || 0) + 1));
+    const totalWithLang = [...langCount.values()].reduce((a, b) => a + b, 0) || 1;
 
-    if (reposRes.ok) {
-      const fetchedRepos = await reposRes.json();
-      if (Array.isArray(fetchedRepos) && fetchedRepos.length > 0) {
-        reposList = fetchedRepos.map((r: any) => ({
-          id: r.id,
-          name: r.name,
-          description: r.description || "Production repository by Nirmal Ranpariya.",
-          html_url: r.html_url,
-          stargazers_count: r.stargazers_count,
-          forks_count: r.forks_count,
-          language: r.language || "TypeScript",
-          updated_at: r.updated_at,
-        }));
-      }
-    }
-
-    return NextResponse.json({ stats: userStats, repos: reposList });
-  } catch {
     return NextResponse.json({
       stats: {
-        username: "NirmalTechDev",
-        totalRepos: 18,
-        totalStars: 42,
-        contributionsThisYear: 840,
-        recentCommitsCount: 156,
-        topLanguages: [
-          { name: "TypeScript", percentage: 48, color: "#3178c6" },
-          { name: "JavaScript", percentage: 32, color: "#f7df1e" },
-          { name: "React / React Native", percentage: 14, color: "#61dafb" },
-          { name: "CSS / Tailwind", percentage: 6, color: "#38bdf8" },
-        ],
+        username,
+        profileUrl: user.html_url,
+        publicRepos: user.public_repos,
+        followers: user.followers,
+        totalStars: repos.reduce((a, r) => a + r.stargazers_count, 0),
+        topLanguages: [...langCount.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(([name, n]) => ({ name, percentage: Math.round((n / totalWithLang) * 100) })),
       },
-      repos: [
-        { id: 101, name: "NirmalPortfolio", description: "Production personal portfolio & Command Center built with Next.js 16, Turbopack, Tailwind CSS v4, and Framer Motion.", html_url: "https://github.com/NirmalTechDev/NirmalPortfolio", stargazers_count: 18, forks_count: 4, language: "TypeScript", updated_at: new Date().toISOString() },
-        { id: 102, name: "collective-ledger-api", description: "Node.js + Express backend service for community finance, decimal precision tracking, and automated late fees.", html_url: "https://github.com/NirmalTechDev/collective-ledger-api", stargazers_count: 14, forks_count: 3, language: "JavaScript", updated_at: new Date(Date.now() - 86400000).toISOString() },
-        { id: 103, name: "opigo-mobile-app", description: "React Native social stock trading application with live polls, expert advice, and Firebase Realtime DB pipelines.", html_url: "https://github.com/NirmalTechDev/opigo-mobile-app", stargazers_count: 9, forks_count: 2, language: "TypeScript", updated_at: new Date(Date.now() - 172800000).toISOString() },
-      ],
+      repos: repos.slice(0, 6).map((r) => ({
+        id: r.id,
+        name: r.name,
+        description: r.description,
+        html_url: r.html_url,
+        stargazers_count: r.stargazers_count,
+        forks_count: r.forks_count,
+        language: r.language,
+        updated_at: r.updated_at,
+      })),
     });
+  } catch (err) {
+    return NextResponse.json({ error: `GitHub is unreachable: ${(err as Error).message}` }, { status: 502 });
   }
 }

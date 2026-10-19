@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
 import { ContactForm } from "@/components/site/ContactForm";
 import { PageHead } from "@/components/site/parts";
-import { email, links } from "@/content/profile";
+import { getPortfolio } from "@/lib/content/api";
 import { pageJsonLd, pageMetadata } from "@/lib/seo";
 
 const description =
@@ -14,7 +14,9 @@ export const metadata: Metadata = pageMetadata({
   path: "/contact",
 });
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { site } = await getPortfolio();
+  const { email, socials: links } = site.identity;
   return (
     <>
       <JsonLd
@@ -24,7 +26,7 @@ export default function ContactPage() {
       />
       <PageHead n="04" label="Contact" title={<>Have a product problem? <em>Let&apos;s talk about the system.</em></>}>
         <p className="lead">
-          Tell me what you are building and where it hurts. I read every message and reply by email.
+          {site.contactPage.intro || "Tell me what you are building and where it hurts. I read every message and reply by email."}
         </p>
       </PageHead>
 

@@ -4,36 +4,38 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/JsonLd";
 import { Clause, Figure, Flow, NumberedList } from "@/components/site/parts";
-import { getProject, projects } from "@/content/projects";
+import { getPortfolio, getProject } from "@/lib/content/api";
 import { pageJsonLd, pageMetadata, projectJsonLd } from "@/lib/seo";
 
 type Params = { slug: string };
 
-export function generateStaticParams() {
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const { projects } = await getPortfolio();
   return projects.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const p = getProject((await params).slug);
-  if (!p) return {};
+  const found = await getProject((await params).slug);
+  if (!found) return {};
+  const p = found.project;
   return pageMetadata({
     title: `${p.title}: case study | Nirmal Ranpariya`,
-    description: `${p.oneLiner} A case study by Nirmal Ranpariya.`,
+    description: p.seoDescription || `${p.oneLiner} A case study by Nirmal Ranpariya.`,
     path: `/work/${p.slug}`,
     image: p.cover?.src,
   });
 }
 
 export default async function CasePage({ params }: { params: Promise<Params> }) {
-  const p = getProject((await params).slug);
-  if (!p) notFound();
-
-  const i = projects.indexOf(p);
-  const next = projects[(i + 1) % projects.length];
+  const found = await getProject((await params).slug);
+  if (!found) notFound();
+  const { project: p, next } = found;
 
   // Sections render only when there is real content behind them.
   const sections: { label: string; body: React.ReactNode; wide?: React.ReactNode }[] = [];
-  sections.push({ label: "Context", body: <div className="prose">{p.context.map((t) => <p key={t}>{t}</p>)}</div> });
+  if (p.context.length) sections.push({ label: "Context", body: <div className="prose">{p.context.map((t, i) => <p key={i}>{t}</p>)}</div> });
   if (p.problem) sections.push({ label: "Problem", body: <div className="prose">{p.problem.map((t) => <p key={t}>{t}</p>)}</div> });
   sections.push({
     label: "Role",
@@ -124,7 +126,7 @@ export default async function CasePage({ params }: { params: Promise<Params> }) 
             kind: p.kind,
             cover: p.cover,
             links: p.links.filter((l) => l.href.startsWith("https://")),
-            independent: p.spec.some(([k, v]) => k === "Type" && v === "Independent product"),
+            independent: p.spec.some((s) => s.label === "Type" && s.value === "Independent product"),
             mobile: p.kind.includes("Mobile"),
           });
           return { ...base, "@graph": [...(base["@graph"] as Record<string, unknown>[]), work] };
@@ -146,10 +148,10 @@ export default async function CasePage({ params }: { params: Promise<Params> }) 
           <h1 className="h1 case-hero__title">{p.title}</h1>
           <p className="lead">{p.oneLiner}</p>
           <dl className="factsheet" style={{ "--cols": p.spec.length } as React.CSSProperties}>
-            {p.spec.map(([k, v]) => (
-              <div key={k}>
-                <dt>{k}</dt>
-                <dd>{v}</dd>
+            {p.spec.map((s) => (
+              <div key={s.label}>
+                <dt>{s.label}</dt>
+                <dd>{s.value}</dd>
               </div>
             ))}
           </dl>
@@ -206,6 +208,7 @@ export default async function CasePage({ params }: { params: Promise<Params> }) 
         </section>
       ))}
 
+      {next.slug !== p.slug && (
       <section className="band band--ink" data-rail="Next project">
         <div className="frame">
           <p className="meta">Next project</p>
@@ -214,6 +217,7 @@ export default async function CasePage({ params }: { params: Promise<Params> }) 
           </Link>
         </div>
       </section>
+      )}
     </>
   );
 }

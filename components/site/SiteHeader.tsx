@@ -4,10 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { nav } from "@/content/profile";
+import { ThemeToggle } from "@/components/site/ThemeToggle";
 
 const isActive = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
-export function SiteHeader() {
+export function SiteHeader({ name, availability, location }: { name: string; availability: string; location: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -36,8 +37,8 @@ export function SiteHeader() {
   return (
     <header className="header">
       <div className="frame header__in">
-        <Link href="/" className="wordmark" aria-label="Nirmal Ranpariya, home">
-          Nirmal Ranpariya
+        <Link href="/" className="wordmark" aria-label={`${name}, home`}>
+          {name}
         </Link>
         <nav className="nav" aria-label="Primary">
           {nav.map((item) => (
@@ -47,9 +48,14 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <p className="meta status">
-          <b>Open to select projects</b>
-        </p>
+        <div className="header__end">
+          {availability && (
+            <p className="meta status">
+              <b>{availability}</b>
+            </p>
+          )}
+          <ThemeToggle />
+        </div>
         <button
           ref={menuRef}
           type="button"
@@ -64,7 +70,7 @@ export function SiteHeader() {
 
       <div id="menu-sheet" className="sheet" data-open={open} inert={!open} role="dialog" aria-modal="true" aria-label="Menu">
         <div className="sheet__top">
-          <span className="wordmark">Nirmal Ranpariya</span>
+          <span className="wordmark">{name}</span>
           <button ref={closeRef} type="button" className="menu-btn" onClick={() => setOpen(false)}>
             Close
           </button>
@@ -78,7 +84,9 @@ export function SiteHeader() {
           ))}
         </nav>
         <p className="meta">
-          <b>Open to select projects</b> · Surat, India
+          {availability && <b>{availability}</b>}
+          {availability && location ? " · " : ""}
+          {location}
         </p>
       </div>
     </header>

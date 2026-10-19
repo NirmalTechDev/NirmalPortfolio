@@ -10,9 +10,11 @@
  *  - Request timeout (Render cold starts can be slow)
  */
 
-const BASE_URL =
+const BASE_URL = (
+  process.env.COLLECTIVE_API_URL ||
   process.env.NEXT_PUBLIC_COLLECTIVE_API_URL ||
-  "https://collective-onc6.onrender.com/api/v1";
+  "https://collective-onc6.onrender.com/api/v1"
+).replace(/\/$/, "");
 
 /** Typed error class for API failures */
 export class ApiError extends Error {

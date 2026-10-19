@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/birthdaywish"],
+      disallow: ["/api/", "/birthdaywish", "/LovedOnesGallery"],
     },
     sitemap: absoluteUrl("/sitemap.xml"),
     host: SITE_URL,

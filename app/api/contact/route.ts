@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ApiError, collectiveApiFetch } from "@/lib/api-client";
 import { mailFallbackConfigured, sendContactByMail } from "@/lib/contact-mail";
 import { nirmalIdentity } from "@/lib/seo";
+import { visitorHeaders } from "@/lib/forward-ip";
 
 // The backend runs on a free-tier host that can take ~50s to wake up.
 export const maxDuration = 60;
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 const BACKEND_TIMEOUT_MS = 50_000;
 
 const BACKEND_ORIGIN = (
-  process.env.NEXT_PUBLIC_COLLECTIVE_API_URL || "https://collective-onc6.onrender.com/api/v1"
+  process.env.COLLECTIVE_API_URL || process.env.NEXT_PUBLIC_COLLECTIVE_API_URL || "https://collective-onc6.onrender.com/api/v1"
 ).replace(/\/api\/v1\/?$/, "");
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,6 +60,7 @@ export async function POST(request: Request) {
       public: true,
       timeout: BACKEND_TIMEOUT_MS,
       body: JSON.stringify({ ...payload, honeypot: "" }),
+      headers: visitorHeaders(request),
     });
     return NextResponse.json({ success: true, message: "Thank you! Your message has been sent." });
   } catch (err) {

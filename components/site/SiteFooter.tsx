@@ -1,19 +1,23 @@
 import Link from "next/link";
-import { email, links, nav, RESUME_HREF } from "@/content/profile";
+import { nav } from "@/content/profile";
+import type { SiteContent } from "@/lib/content/types";
 
-export function SiteFooter() {
+export function SiteFooter({ identity, resumeHref }: { identity: SiteContent["identity"]; resumeHref: string }) {
+  const { email, socials: links } = identity;
   return (
     <footer className="footer">
       <div className="frame">
         <p className="footer__name" aria-hidden="true">
-          Nirmal
+          {identity.firstName}
           <br />
-          Ranpariya
+          {identity.lastName}
         </p>
         <div className="grid footer__cols">
           <div>
             <p className="meta">Software engineer</p>
-            <p>React Native · Surat, India</p>
+            <p>
+              {identity.shortRole} · {identity.location}
+            </p>
           </div>
           <div>
             <p className="meta">Write</p>
@@ -32,7 +36,7 @@ export function SiteFooter() {
                 </li>
               ))}
               <li>
-                <a className="tlink" href={RESUME_HREF} target="_blank" rel="noopener noreferrer">
+                <a className="tlink" href={resumeHref} target="_blank" rel="noopener noreferrer">
                   Résumé (PDF) <span className="arr" aria-hidden="true">↗</span>
                 </a>
               </li>
@@ -52,7 +56,9 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="footer__base">
-          <p className="meta">© {new Date().getFullYear()} Nirmal Ranpariya</p>
+          <p className="meta">
+            © {new Date().getFullYear()} {identity.firstName} {identity.lastName}
+          </p>
           <p className="meta">Set in Instrument Serif and Geist · Next.js · Hosted on Vercel</p>
         </div>
       </div>

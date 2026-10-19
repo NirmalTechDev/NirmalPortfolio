@@ -498,10 +498,6 @@ main {
   padding-bottom: var(--s-3);
   border-bottom: 1px solid var(--rule);
 }
-.hero__name {
-  grid-column: 1 / -1;
-  margin-top: var(--s-5);
-}
 .mask {
   display: block;
   overflow: hidden;
@@ -518,16 +514,19 @@ main {
     transform: translateY(105%);
   }
 }
-.hero__body {
-  margin-top: var(--s-6);
+.hero__grid {
   row-gap: var(--s-6);
+  margin-top: var(--s-5);
+}
+.hero__name {
+  grid-column: 1 / -1;
 }
 .hero__portrait {
   grid-column: 1 / -1;
-  order: -1;
   position: relative;
   aspect-ratio: 4 / 5;
-  max-width: 22rem;
+  width: 100%;
+  max-width: 24rem;
   overflow: hidden;
   background: #dfe3ea;
   animation: unveil var(--d-slow) var(--ease) 80ms both;
@@ -545,6 +544,7 @@ main {
 }
 .hero__copy {
   grid-column: 1 / -1;
+  max-width: 40rem;
 }
 .hero__copy .lead {
   margin-bottom: var(--s-5);
@@ -581,31 +581,28 @@ main {
   font-size: 0.98rem;
   line-height: 1.45;
 }
+/* Desktop: name and text on the left, portrait on the right, top-aligned with the name. */
 @media (min-width: 60rem) {
-  .hero__name {
-    margin-top: var(--s-4);
+  .hero__grid {
+    align-items: start;
+    row-gap: var(--s-6);
+    margin-top: var(--s-6);
   }
-  .hero__portrait {
-    order: 0;
+  .hero__name {
+    grid-column: 1 / span 8;
     grid-row: 1;
-    grid-column: 8 / -1;
-    max-width: none;
-    margin-top: calc(var(--s-7) * -1.4);
-    position: relative;
-    z-index: 2;
+    /* sized so the longer line always fits its eight columns */
+    font-size: min(var(--t-display), 12.5vw);
   }
   .hero__copy {
-    grid-row: 1;
     grid-column: 1 / span 6;
-    padding-top: var(--s-6);
+    grid-row: 2;
   }
-  .hero__body {
-    margin-top: 0;
-    align-items: start;
-  }
-  .hero__name {
-    position: relative;
-    z-index: 3;
+  .hero__portrait {
+    grid-column: 9 / -1;
+    grid-row: 1 / span 2;
+    max-width: none;
+    margin-top: 0.6rem;
   }
 }
 
@@ -1433,4 +1430,91 @@ main {
   display: grid;
   align-content: center;
   padding-top: var(--header-h);
+}
+
+/* ==========================================================================
+   Dark theme — same editorial system, inverted to warm charcoal.
+   Applied from the system setting, or explicitly via the header toggle
+   (html[data-site-theme]).
+   ========================================================================== */
+.theme-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  flex: none;
+  transition: border-color var(--d-fast), transform var(--d-fast);
+}
+.theme-btn:hover {
+  border-color: var(--ink);
+}
+.theme-btn:active {
+  transform: scale(0.94);
+}
+.theme-btn:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+.header__end {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-left: auto;
+}
+@media (min-width: 60rem) {
+  .header__end {
+    justify-self: end;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-site-theme="light"]) .site {
+    --paper: #171612;
+    --paper-2: #201e19;
+    --ink: #ece7da;
+    --ink-2: #a8a393;
+    --rule: rgb(236 231 218 / 0.2);
+    --rule-soft: rgb(236 231 218 / 0.1);
+    --signal: #ff8a66;
+    --on-ink: #ece7da;
+    --on-ink-2: #a9a595;
+    color-scheme: dark;
+  }
+  html:not([data-site-theme="light"]) .site .band--ink,
+  html:not([data-site-theme="light"]) .site .footer,
+  html:not([data-site-theme="light"]) .site .sheet {
+    background: #0d0c0a;
+    color: var(--on-ink);
+  }
+  html:not([data-site-theme="light"]):has(.site),
+  html:not([data-site-theme="light"]) body:has(.site) {
+    background: #171612;
+  }
+}
+html[data-site-theme="dark"] .site {
+  --paper: #171612;
+  --paper-2: #201e19;
+  --ink: #ece7da;
+  --ink-2: #a8a393;
+  --rule: rgb(236 231 218 / 0.2);
+  --rule-soft: rgb(236 231 218 / 0.1);
+  --signal: #ff8a66;
+  --on-ink: #ece7da;
+  --on-ink-2: #a9a595;
+  color-scheme: dark;
+}
+html[data-site-theme="dark"] .site .band--ink,
+html[data-site-theme="dark"] .site .footer,
+html[data-site-theme="dark"] .site .sheet {
+  background: #0d0c0a;
+  color: var(--on-ink);
+}
+html[data-site-theme="dark"]:has(.site),
+html[data-site-theme="dark"] body:has(.site) {
+  background: #171612;
 }

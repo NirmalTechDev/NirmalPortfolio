@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHead, ProjectFeature } from "@/components/site/parts";
-import { projects } from "@/content/projects";
+import { getPortfolio } from "@/lib/content/api";
 import { pageJsonLd, pageMetadata } from "@/lib/seo";
 
 const description =
@@ -13,17 +13,15 @@ export const metadata: Metadata = pageMetadata({
   path: "/work",
 });
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const { site, projects } = await getPortfolio();
   return (
     <>
       <JsonLd
         data={pageJsonLd({ path: "/work", name: "React Native & Web Projects | Nirmal Ranpariya", description, crumbs: [{ name: "Work", path: "/work" }] })}
       />
       <PageHead n="01" label="Selected work" title={<>Work, <em>in detail.</em></>}>
-        <p className="lead">
-          Four products. Each page says what I built, how it fits together and what I did not do, because the honest
-          version is the useful one.
-        </p>
+        {site.workPage.intro && <p className="lead">{site.workPage.intro}</p>}
       </PageHead>
       <div style={{ marginTop: "var(--s-7)" }}>
         {projects.map((p) => (
