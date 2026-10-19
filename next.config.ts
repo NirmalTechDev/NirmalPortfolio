@@ -60,12 +60,13 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
-    let birthdayWishUrl = process.env.BIRTHDAY_WISH_URL || "https://birthday-wish-eight-pink.vercel.app";
+    // .trim(): values pasted into Vercel sometimes carry a stray tab/space, which breaks rewrites.
+    let birthdayWishUrl = process.env.BIRTHDAY_WISH_URL?.trim() || "https://birthday-wish-eight-pink.vercel.app";
     if (process.env.NODE_ENV === "production" && birthdayWishUrl.includes("localhost")) {
       birthdayWishUrl = "https://birthday-wish-eight-pink.vercel.app";
     }
     // Gallery app (LovedOnesGallery, formerly DinkyN). It runs with basePath "/LovedOnesGallery".
-    let galleryUrl = process.env.GALLERY_URL || "https://dinky-n.vercel.app";
+    let galleryUrl = process.env.GALLERY_URL?.trim() || "https://dinky-n.vercel.app";
     if (process.env.NODE_ENV === "production" && galleryUrl.includes("localhost")) {
       galleryUrl = "https://dinky-n.vercel.app";
     }
