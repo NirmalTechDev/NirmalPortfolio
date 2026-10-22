@@ -6,6 +6,7 @@
 import { capabilities, education, journey, languages, links, principles, role, RESUME_HREF } from "@/content/profile";
 import { projects as legacyProjects } from "@/content/projects";
 import { nirmalIdentity, PROFILE_IMAGE } from "@/lib/seo";
+import { fallbackServices } from "./services";
 import type { ExperienceEntry, Project, ResumeInfo, SiteContent } from "./types";
 
 export const fallbackSite: SiteContent = {
@@ -70,6 +71,7 @@ export const fallbackSite: SiteContent = {
   contactPage: { intro: "" },
   principles: principles.map((p) => ({ title: p.title, body: p.body })),
   capabilities: capabilities.map((c) => ({ group: c.group, items: c.items.map((i) => ({ ...i })) })),
+  services: fallbackServices,
 };
 
 export const fallbackProjects: Project[] = legacyProjects.map((p, index) => ({

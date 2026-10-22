@@ -14,7 +14,7 @@ const display = Instrument_Serif({
   display: "swap",
 });
 
-const TITLE = "Nirmal Ranpariya | React Native Developer & Software Engineer";
+const TITLE = "React Native Developer in Surat, India | Nirmal Ranpariya";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

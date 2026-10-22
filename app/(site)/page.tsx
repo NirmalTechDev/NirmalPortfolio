@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
+import { ServiceLinks } from "@/components/site/Landing";
 import { CapabilityMap, Clause, Principles, ProjectIndex } from "@/components/site/parts";
 import { getPortfolio, RESUME_HREF } from "@/lib/content/api";
+import { visiblePages } from "@/lib/content/services";
 import { homeJsonLd, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Nirmal Ranpariya | React Native Developer & Software Engineer",
+  title: "React Native Developer in Surat, India | Nirmal Ranpariya",
   description:
-    "Nirmal Ranpariya is a software engineer in Surat, India, building React Native mobile products and the APIs, notifications and release pipelines behind them.",
+    "Nirmal Ranpariya is a React Native developer in Surat, India, building Android and iOS apps, APIs and releases. Available for freelance and contract work.",
   path: "/",
 });
 
@@ -36,11 +38,14 @@ export default async function HomePage() {
             <h1 className="display hero__name">
               <span className="mask" style={{ "--i": 0 } as React.CSSProperties}>
                 <span>{identity.firstName}</span>
-              </span>
+              </span>{" "}
               <span className="mask" style={{ "--i": 1 } as React.CSSProperties}>
                 <span>
                   <em>{identity.lastName}</em>
                 </span>
+              </span>{" "}
+              <span className="hero__role">
+                {identity.title} · {identity.location}
               </span>
             </h1>
             <div className="hero__portrait">
@@ -136,9 +141,31 @@ export default async function HomePage() {
         </section>
       )}
 
+      {visiblePages(site.services, "service").length > 0 && (
+        <section className="band" data-rail="Services" aria-labelledby="svc-h">
+          <div className="frame">
+            <Clause n="04" label="Services" />
+            <div className="grid" style={{ marginBottom: "var(--s-6)", rowGap: "var(--s-4)" }}>
+              <h2 className="h2" id="svc-h" style={{ gridColumn: "1 / span 8" }}>
+                Hire me to build, fix or ship your app.
+              </h2>
+              <p className="lead" style={{ gridColumn: "1 / -1", maxWidth: "34rem" }}>
+                Freelance and contract React Native work for startups and businesses in Surat, across India and abroad.
+              </p>
+            </div>
+            <ServiceLinks pages={visiblePages(site.services, "service")} />
+            <p style={{ marginTop: "var(--s-5)" }}>
+              <Link className="tlink" href="/services">
+                All services <span className="arr" aria-hidden="true">→</span>
+              </Link>
+            </p>
+          </div>
+        </section>
+      )}
+
       <section className="band band--paper2" data-rail="Contact">
         <div className="frame">
-          <Clause n="04" label="Contact" />
+          <Clause n="05" label="Contact" />
           <h2 className="h1" style={{ maxWidth: "12ch" }}>
             {home.contactHeading}
           </h2>

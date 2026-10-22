@@ -23,6 +23,12 @@ export const nirmalIdentity = {
     "Nirmal Ranpariya is a React Native developer and software engineer in Surat, India, building mobile apps, APIs and release pipelines.",
   skills: [
     "React Native",
+    "React Native app development",
+    "Android app development",
+    "iOS app development",
+    "Expo",
+    "Push notifications",
+    "Firebase Cloud Messaging",
     "TypeScript",
     "JavaScript",
     "React",
@@ -105,7 +111,73 @@ export function personJsonLd() {
       name: "Saurashtra University",
     },
     knowsAbout: nirmalIdentity.skills,
+    hasOccupation: {
+      "@type": "Occupation",
+      name: "React Native Developer",
+      occupationLocation: { "@type": "City", name: "Surat" },
+      skills: nirmalIdentity.skills.join(", "),
+    },
+    makesOffer: { "@id": SERVICE_ID },
     sameAs: Object.values(professionalProfiles),
+  };
+}
+
+export const SERVICE_ID = `${SITE_URL}/services#service`;
+
+const AREAS: Record<string, unknown[]> = {
+  surat: [
+    { "@type": "City", name: "Surat" },
+    { "@type": "State", name: "Gujarat" },
+  ],
+  india: [{ "@type": "Country", name: "India" }, "Worldwide"],
+  default: [{ "@type": "City", name: "Surat" }, { "@type": "Country", name: "India" }, "Worldwide"],
+};
+
+/** The freelance practice itself: who offers what, where. Used on /services. */
+export function professionalServiceJsonLd(offers: { name: string; path: string; description: string }[]) {
+  return {
+    "@type": "ProfessionalService",
+    "@id": SERVICE_ID,
+    name: "Nirmal Ranpariya — React Native App Development",
+    url: absoluteUrl("/services"),
+    image: absoluteUrl(PROFILE_IMAGE),
+    email: nirmalIdentity.email,
+    telephone: nirmalIdentity.phone,
+    address: { "@type": "PostalAddress", addressLocality: "Surat", addressRegion: "Gujarat", addressCountry: "IN" },
+    areaServed: AREAS.default,
+    founder: { "@id": PERSON_ID },
+    knowsAbout: nirmalIdentity.skills,
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "React Native development services",
+      itemListElement: offers.map((o) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: o.name, url: absoluteUrl(o.path), description: o.description },
+      })),
+    },
+  };
+}
+
+/** One service or location page: the Service plus its FAQ. */
+export function serviceJsonLd(p: { name: string; path: string; description: string; serviceType: string; area?: "surat" | "india" }) {
+  return {
+    "@type": "Service",
+    "@id": `${absoluteUrl(p.path)}#service`,
+    name: p.name,
+    serviceType: p.serviceType,
+    description: p.description,
+    url: absoluteUrl(p.path),
+    provider: { "@id": PERSON_ID },
+    areaServed: AREAS[p.area || "default"],
+    isRelatedTo: { "@id": SERVICE_ID },
+  };
+}
+
+export function faqJsonLd(path: string, faqs: { q: string; a: string }[]) {
+  return {
+    "@type": "FAQPage",
+    "@id": `${absoluteUrl(path)}#faq`,
+    mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
   };
 }
 

@@ -80,6 +80,48 @@ export interface Capability {
   items: { name: string; note?: string }[];
 }
 
+export interface Faq {
+  q: string;
+  a: string;
+}
+
+/**
+ * A search-focused page. "service" pages live at /services/<slug>; "location" pages have fixed
+ * addresses (/react-native-developer-surat, /react-native-developer-india) and only their text is editable.
+ */
+export interface LandingPage {
+  slug: string;
+  kind: "service" | "location";
+  /** Short name used in menus and cards. */
+  navLabel: string;
+  /** The page's visible H1. */
+  heading: string;
+  /** <title> shown in Google. Keep under ~60 characters. */
+  metaTitle: string;
+  /** Snippet shown in Google. Keep under ~155 characters. */
+  metaDescription: string;
+  /** One-sentence summary used on cards. */
+  summary: string;
+  intro: string;
+  includes: string[];
+  sections: { heading: string; body: string }[];
+  faqs: Faq[];
+  /** Case-study slugs shown as proof. */
+  projects: string[];
+  isVisible?: boolean;
+}
+
+export interface ServicesContent {
+  heading: string;
+  metaTitle: string;
+  metaDescription: string;
+  intro: string;
+  engagement: LabelValue[];
+  process: { title: string; body: string }[];
+  faqs: Faq[];
+  pages: LandingPage[];
+}
+
 export interface SiteContent {
   identity: {
     firstName: string;
@@ -120,6 +162,7 @@ export interface SiteContent {
   contactPage: { intro: string };
   principles: { title: string; body: string }[];
   capabilities: Capability[];
+  services: ServicesContent;
   updatedAt?: string;
 }
 

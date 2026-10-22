@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { API_URL } from "@/lib/env";
 import { fallbackExperience, fallbackProjects, fallbackResume, fallbackSite } from "./fallback";
+import { resolveServices } from "./services";
 import type { ExperienceEntry, PortfolioData, Project, ResumeInfo, SiteContent } from "./types";
 
 /**
@@ -34,6 +35,7 @@ const mergeSite = (live: Partial<SiteContent>): SiteContent => {
       out[k] = v;
     }
   }
+  out.services = resolveServices(live.services);
   return out as unknown as SiteContent;
 };
 

@@ -4,9 +4,10 @@ export const RESUME_HREF = "/Nirmal-ranpariya-resume.pdf";
 
 export const nav = [
   { n: "01", label: "Work", href: "/work" },
-  { n: "02", label: "About", href: "/about" },
-  { n: "03", label: "Experience", href: "/experience" },
-  { n: "04", label: "Contact", href: "/contact" },
+  { n: "02", label: "Services", href: "/services" },
+  { n: "03", label: "About", href: "/about" },
+  { n: "04", label: "Experience", href: "/experience" },
+  { n: "05", label: "Contact", href: "/contact" },
 ] as const;
 
 export const links = [

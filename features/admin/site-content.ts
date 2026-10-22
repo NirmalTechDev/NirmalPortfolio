@@ -2,10 +2,11 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fallbackSite } from "@/lib/content/fallback";
+import { resolveServices } from "@/lib/content/services";
 import type { SiteContent } from "@/lib/content/types";
 import { api } from "./api";
 
-const SECTIONS = ["identity", "home", "about", "workPage", "experiencePage", "contactPage", "principles", "capabilities"] as const;
+const SECTIONS = ["identity", "home", "about", "workPage", "experiencePage", "contactPage", "principles", "capabilities", "services"] as const;
 
 /** Server document (or the built-in content when nothing has been saved yet). */
 export function useSiteContent() {
@@ -20,6 +21,7 @@ export function useSiteContent() {
         if (v === undefined || v === null) continue;
         merged[k] = Array.isArray(v) ? v : { ...(merged[k] as object), ...(v as object) };
       }
+      merged.services = resolveServices((doc as unknown as Record<string, unknown>).services as SiteContent["services"] | undefined);
       return { content: merged as unknown as SiteContent, saved: true, updatedAt: doc.updatedAt || null };
     },
   });

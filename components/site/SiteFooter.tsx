@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { nav } from "@/content/profile";
-import type { SiteContent } from "@/lib/content/types";
+import { landingPath } from "@/lib/content/services";
+import type { LandingPage, SiteContent } from "@/lib/content/types";
 
-export function SiteFooter({ identity, resumeHref }: { identity: SiteContent["identity"]; resumeHref: string }) {
+export function SiteFooter({ identity, resumeHref, landing = [] }: { identity: SiteContent["identity"]; resumeHref: string; landing?: LandingPage[] }) {
   const { email, socials: links } = identity;
   return (
     <footer className="footer">
@@ -55,6 +56,16 @@ export function SiteFooter({ identity, resumeHref }: { identity: SiteContent["id
             </ul>
           </div>
         </div>
+        {landing.length > 0 && (
+          <nav className="footer__services" aria-label="Services">
+            <Link href="/services">Hire a React Native developer</Link>
+            {landing.map((p) => (
+              <Link key={p.slug} href={landingPath(p)}>
+                {p.navLabel}
+              </Link>
+            ))}
+          </nav>
+        )}
         <div className="footer__base">
           <p className="meta">
             © {new Date().getFullYear()} {identity.firstName} {identity.lastName}
