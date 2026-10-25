@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Briefcase,
+  LayoutDashboard,
   Cake,
   ExternalLink,
   FileText,
@@ -45,7 +46,8 @@ const NAV: { group: string; items: { href: string; label: string; icon: React.El
   {
     group: "Personal",
     items: [
-      { href: "/me/gallery", label: "Gallery", icon: Images },
+      { href: "/me/galleries", label: "Galleries", icon: LayoutDashboard },
+      { href: "/me/gallery", label: "Photo library", icon: Images },
       { href: "/me/birthdays", label: "Birthday pages", icon: Cake },
     ],
   },

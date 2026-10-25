@@ -133,3 +133,38 @@ export interface BirthdaySummary {
   cover: string | null;
   updatedAt: string;
 }
+
+export type GalleryVisibility = "draft" | "published" | "private";
+
+/** A gallery page: an ordered selection of photos from the photo library. */
+export interface GalleryDoc {
+  _id: string;
+  slug: string;
+  title: string;
+  kicker: string;
+  intro: string;
+  note: string;
+  logoUrl: string;
+  logoPublicId?: string;
+  visibility: GalleryVisibility;
+  shareKey: string;
+  isDefault: boolean;
+  photos: string[];
+  coverPhoto: string | null;
+  updatedAt: string;
+  /** full photo documents, in gallery order (returned by GET /galleries/:id) */
+  photoDocs?: GalleryPhoto[];
+}
+
+export interface GallerySummary {
+  _id: string;
+  slug: string;
+  title: string;
+  visibility: GalleryVisibility;
+  isDefault: boolean;
+  shareKey: string;
+  photoCount: number;
+  visibleCount: number;
+  cover: string | null;
+  updatedAt: string;
+}

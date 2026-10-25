@@ -112,6 +112,7 @@ export function ImageField({
   wide,
   removable = true,
   withCaption,
+  withAlt = true,
 }: {
   label: string;
   value: ImageValue | undefined | null;
@@ -121,6 +122,8 @@ export function ImageField({
   wide?: boolean;
   removable?: boolean;
   withCaption?: boolean;
+  /** false for purely decorative images (e.g. a logo next to the visible name) */
+  withAlt?: boolean;
 }) {
   const { upload, progress, busy } = useUploader(kind);
   const input = useRef<HTMLInputElement>(null);
@@ -159,13 +162,15 @@ export function ImageField({
           </div>
           {value?.src && (
             <>
-              <input
-                className="adm-input"
-                aria-label="Image description for screen readers"
-                placeholder="Describe the image (for screen readers)"
-                value={value.alt || ""}
-                onChange={(e) => onChange({ ...value, alt: e.target.value })}
-              />
+              {withAlt && (
+                <input
+                  className="adm-input"
+                  aria-label="Image description for screen readers"
+                  placeholder="Describe the image (for screen readers)"
+                  value={value.alt || ""}
+                  onChange={(e) => onChange({ ...value, alt: e.target.value })}
+                />
+              )}
               {withCaption && (
                 <input className="adm-input" aria-label="Caption" placeholder="Caption (optional)" value={value.caption || ""} onChange={(e) => onChange({ ...value, caption: e.target.value })} />
               )}

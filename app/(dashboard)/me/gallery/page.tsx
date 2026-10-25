@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Eye, EyeOff, GripVertical, Heart, RefreshCw, RotateCcw, Trash2, X } from "lucide-react";
@@ -130,8 +131,13 @@ export default function GalleryAdminPage() {
   return (
     <div className="adm-page">
       <PageHeader
-        title="Gallery"
-        description="Photos are stored on Cloudinary and appear in your gallery at nirmalranpariya.in/LovedOnesGallery, in this order."
+        title="Photo library"
+        description={
+          <>
+            All your photos, stored on Cloudinary. New uploads also appear in your main gallery. Choose which photos each gallery shows, and their order, in{" "}
+            <Link href="/me/galleries">Galleries</Link>. Hiding a photo here hides it in every gallery.
+          </>
+        }
         where={stats ? `${stats.visible} visible · ${stats.hidden} hidden · ${stats.trashed} in trash` : undefined}
         actions={
           <a className="adm-btn" href={GALLERY_PATH} target="_blank" rel="noopener noreferrer">

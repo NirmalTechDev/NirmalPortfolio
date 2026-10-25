@@ -14,6 +14,7 @@ const ALLOWED = [
   /^media\/(sign|status)$/,
   /^gallery(\/(admin|bulk|reorder|[a-f0-9]{24}(\/(restore|permanent))?))?$/,
   /^birthdays(\/[a-f0-9]{24}(\/(duplicate|set-default|preview-token))?)?$/,
+  /^galleries(\/[a-f0-9]{24}(\/(photos|duplicate|set-default|preview-token|share-key))?)?$/,
 ];
 
 type Ctx = { params: Promise<{ path: string[] }> };

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, FileText, FolderKanban, Images, Inbox, UserRound, Cake } from "lucide-react";
+import { ArrowUpRight, FileText, FolderKanban, Images, Inbox, LayoutDashboard, UserRound, Cake } from "lucide-react";
 import { useOverview } from "@/features/admin/shell";
 import { ErrorBlock, LoadingBlock, Note, PageHeader, Section, timeAgo } from "@/features/admin/ui";
 
@@ -27,6 +27,12 @@ const ACTIONS: Record<string, string> = {
   GALLERY_PHOTO_TRASHED: "Moved a photo to trash",
   GALLERY_PHOTO_RESTORED: "Restored a photo",
   GALLERY_PHOTO_DELETED: "Deleted a photo permanently",
+  GALLERY_CREATED: "Created a gallery",
+  GALLERY_UPDATED: "Edited a gallery",
+  GALLERY_DUPLICATED: "Duplicated a gallery",
+  GALLERY_DEFAULT_SET: "Changed the main gallery",
+  GALLERY_SHARE_KEY_CHANGED: "Changed a private gallery link",
+  GALLERY_DELETED: "Deleted a gallery",
   BIRTHDAY_CREATED: "Created a birthday page",
   BIRTHDAY_UPDATED: "Edited a birthday page",
   BIRTHDAY_DUPLICATED: "Duplicated a birthday page",
@@ -141,10 +147,17 @@ export default function OverviewPage() {
 
             <Section title="Personal pages">
               <div className="adm-rows">
+                <Link className="adm-rowitem" href="/me/galleries">
+                  <LayoutDashboard aria-hidden="true" />
+                  <div className="adm-rowitem__main">
+                    <p className="adm-rowitem__title">Galleries</p>
+                    <p className="adm-rowitem__sub">Separate galleries for people and moments</p>
+                  </div>
+                </Link>
                 <Link className="adm-rowitem" href="/me/gallery">
                   <Images aria-hidden="true" />
                   <div className="adm-rowitem__main">
-                    <p className="adm-rowitem__title">Gallery</p>
+                    <p className="adm-rowitem__title">Photo library</p>
                     <p className="adm-rowitem__sub">
                       {data.counts.photos} photo{data.counts.photos === 1 ? "" : "s"}
                     </p>
